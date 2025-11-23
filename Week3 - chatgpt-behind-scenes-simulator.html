@@ -41,6 +41,136 @@
             opacity: 0.95;
         }
 
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            background: white;
+            border: 2px solid #667eea;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #667eea;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.05em;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .quiz-option.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .quiz-feedback {
+            background: #e7f3ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .quiz-feedback.correct {
+            background: #d1fae5;
+            border-left-color: #10b981;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fee2e2;
+            border-left-color: #ef4444;
+        }
+
+        .quiz-question-box {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .quiz-question-box h4 {
+            color: #1a1a2e;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .quiz-question-box p {
+            font-size: 1.3em;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .score-display h2 {
+            color: #92400e;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
         .panel {
             background: white;
             border-radius: 15px;
@@ -696,6 +826,14 @@
             <p>See How ChatGPT Processes Your Prompts Internally</p>
         </div>
 
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('simulator')">🔬 Simulator</button>
+            <button class="tab-btn" onclick="switchTab('quiz')">🎯 Knowledge Quiz</button>
+        </div>
+
+        <!-- Simulator Tab -->
+        <div id="simulator" class="tab-content active">
+
         <!-- Input Panel -->
         <div class="panel">
             <h2>💬 Enter Your Prompt</h2>
@@ -984,8 +1122,240 @@
                 </div>
             </div>
         </div>
+        </div>
+        <!-- End Simulator Tab -->
+
+        <!-- Quiz Tab -->
+        <div id="quiz" class="tab-content">
+            <div class="panel">
+                <h2>🎯 Test Your Knowledge: ChatGPT Processing Quiz</h2>
+                <p style="color: #666; font-size: 1.1em; margin-bottom: 30px;">
+                    Based on what you learned from the simulator, answer these 10 questions to test your understanding of how ChatGPT processes prompts behind the scenes!
+                </p>
+                <div id="quizContainer"></div>
+            </div>
+        </div>
+        <!-- End Quiz Tab -->
+
     </div>
 
+    <script>
+        // Tab switching function
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Quiz functionality
+        const quizQuestions = [
+            {
+                question: "What is the FIRST thing ChatGPT does when you send a message?",
+                options: [
+                    "Generates the complete response immediately",
+                    "Breaks your message into tokens (small pieces)",
+                    "Searches a database for the answer",
+                    "Sends your message to human reviewers"
+                ],
+                correct: 1,
+                explanation: "Tokenization is the very first step! ChatGPT breaks your message into tokens (pieces of words) before processing. This is like breaking a sentence into bite-sized chunks the AI can understand. A token can be a word, part of a word, or even punctuation."
+            },
+            {
+                question: "What are 'system prompts' in ChatGPT?",
+                options: [
+                    "The messages users type into the chat",
+                    "Hidden instructions that control ChatGPT's behavior and tone",
+                    "Error messages when something goes wrong",
+                    "Prompts that only system administrators can see"
+                ],
+                correct: 1,
+                explanation: "System prompts are invisible instructions added before your message that tell ChatGPT how to behave - what tone to use, what safety rules to follow, and how to format responses. Users never see these, but they're always there guiding the AI's behavior!"
+            },
+            {
+                question: "How does ChatGPT store all its knowledge?",
+                options: [
+                    "In a massive database it searches through",
+                    "By connecting to the internet in real-time",
+                    "Encoded in billions of numbers (parameters/weights) learned during training",
+                    "It doesn't store knowledge, it makes everything up"
+                ],
+                correct: 2,
+                explanation: "ChatGPT's knowledge is encoded in approximately 175 billion parameters (numbers/weights) that were learned during training. It's NOT searching a database - the knowledge is baked into the mathematical patterns in the neural network itself. Think of it like compressed memories!"
+            },
+            {
+                question: "What is the 'attention mechanism' in ChatGPT?",
+                options: [
+                    "A timer that ensures ChatGPT responds quickly",
+                    "A way for the AI to focus on relevant parts of the input when generating each word",
+                    "A system that checks if users are paying attention",
+                    "The process of correcting spelling errors"
+                ],
+                correct: 1,
+                explanation: "The attention mechanism allows ChatGPT to dynamically focus on different parts of your prompt when generating each word. If generating a word about 'quantum computing,' it pays more attention to those words in your prompt rather than treating all words equally. It's like selective focus!"
+            },
+            {
+                question: "How does ChatGPT generate its responses?",
+                options: [
+                    "It writes the entire response at once, then sends it",
+                    "It copies and pastes from pre-written templates",
+                    "It generates one token at a time, left to right, not knowing what comes next",
+                    "It generates the response backwards, then reverses it"
+                ],
+                correct: 2,
+                explanation: "ChatGPT generates responses one token (word piece) at a time, from left to right, without knowing what it will say next! Each word is chosen based on probability - what's most likely to come next given everything before it. It's like improvising a speech word-by-word!"
+            },
+            {
+                question: "What is a 'context window' in ChatGPT?",
+                options: [
+                    "The physical window where ChatGPT is displayed",
+                    "The amount of previous conversation ChatGPT can remember and use",
+                    "A popup window with additional information",
+                    "The time window during which ChatGPT can respond"
+                ],
+                correct: 1,
+                explanation: "The context window is ChatGPT's short-term memory - the amount of previous conversation it can 'see' and use when generating responses. Think of it like RAM in a computer. Once the conversation gets too long, older messages get forgotten to make room for new ones!"
+            },
+            {
+                question: "What happens during the 'Knowledge Retrieval' stage?",
+                options: [
+                    "ChatGPT searches Google for answers",
+                    "The neural network activates patterns learned from training data related to your question",
+                    "ChatGPT asks other AIs for help",
+                    "Your question is sent to a human expert"
+                ],
+                correct: 1,
+                explanation: "During knowledge retrieval, ChatGPT doesn't search anywhere - instead, relevant neural pathways light up based on your query. It's pattern matching! The billions of parameters contain compressed knowledge from training, and the right patterns activate based on what you're asking about."
+            },
+            {
+                question: "Why does ChatGPT sometimes generate responses token by token (streaming)?",
+                options: [
+                    "To save computer memory",
+                    "To make it seem like it's thinking in real-time and provide faster perceived response",
+                    "Because it can't generate full sentences at once",
+                    "To check for errors after each word"
+                ],
+                correct: 1,
+                explanation: "Streaming (showing tokens as they're generated) makes the response feel faster because you start seeing the answer immediately instead of waiting for the complete response. The AI generates one token at a time anyway, so streaming just shows you the process in real-time!"
+            },
+            {
+                question: "What is the purpose of the 'Safety & Moderation' stage?",
+                options: [
+                    "To make sure ChatGPT's servers don't overheat",
+                    "To ensure the response is helpful, harmless, and doesn't violate policies",
+                    "To check if the user's internet connection is safe",
+                    "To moderate the speed of response generation"
+                ],
+                correct: 1,
+                explanation: "The safety and moderation stage checks that ChatGPT's response doesn't contain harmful content, doesn't leak personal information, and follows ethical guidelines. It's like a final quality control check before the response is sent to you!"
+            },
+            {
+                question: "What are 'embeddings' in the context of ChatGPT processing?",
+                options: [
+                    "Tokens embedded in the user's message",
+                    "Mathematical representations that convert tokens into numbers the AI can process",
+                    "Hidden messages embedded in responses",
+                    "The process of saving conversations to disk"
+                ],
+                correct: 1,
+                explanation: "Embeddings convert tokens (word pieces) into high-dimensional mathematical vectors (lists of numbers). This allows the AI to perform mathematical operations on language! Words with similar meanings get similar number representations. It's how ChatGPT translates language into math!"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let quizScore = 0;
+
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            
+            if (currentQuestion >= quizQuestions.length) {
+                container.innerHTML = `
+                    <div class="score-display">
+                        <h2>🎉 Quiz Complete!</h2>
+                        <p style="font-size: 1.8em; color: #92400e; margin: 20px 0;">You scored ${quizScore} out of ${quizQuestions.length}</p>
+                        <p style="font-size: 1.2em; color: #78350f; margin-top: 20px;">${getScoreMessage()}</p>
+                        <button class="btn-primary" onclick="resetQuiz()" style="margin-top: 30px; max-width: 400px;">Take Quiz Again</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const q = quizQuestions[currentQuestion];
+            container.innerHTML = `
+                <div class="quiz-question-box">
+                    <h4>Question ${currentQuestion + 1} of ${quizQuestions.length}</h4>
+                    <p>${q.question}</p>
+                </div>
+                ${q.options.map((option, index) => `
+                    <div class="quiz-option" onclick="selectAnswer(${index})">
+                        ${option}
+                    </div>
+                `).join('')}
+                <div id="quizFeedback" style="margin-top: 20px;"></div>
+            `;
+        }
+
+        function selectAnswer(selected) {
+            const q = quizQuestions[currentQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById('quizFeedback');
+            
+            options.forEach((opt, index) => {
+                opt.style.pointerEvents = 'none';
+                if (index === q.correct) {
+                    opt.classList.add('correct');
+                } else if (index === selected) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (selected === q.correct) {
+                quizScore++;
+                feedback.innerHTML = `
+                    <div class="quiz-feedback correct">
+                        <h4 style="color: #065f46; margin-bottom: 10px;">✅ Correct! Excellent!</h4>
+                        <p style="color: #047857;">${q.explanation}</p>
+                    </div>
+                `;
+            } else {
+                feedback.innerHTML = `
+                    <div class="quiz-feedback incorrect">
+                        <h4 style="color: #991b1b; margin-bottom: 10px;">❌ Not quite right</h4>
+                        <p style="color: #7f1d1d;">${q.explanation}</p>
+                    </div>
+                `;
+            }
+
+            feedback.innerHTML += `<button class="btn-primary" onclick="nextQuestion()" style="margin-top: 20px; max-width: 300px;">Next Question →</button>`;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            renderQuiz();
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            quizScore = 0;
+            renderQuiz();
+        }
+
+        function getScoreMessage() {
+            const percentage = (quizScore / quizQuestions.length) * 100;
+            if (percentage === 100) return "Perfect score! You truly understand how ChatGPT works behind the scenes! 🌟";
+            if (percentage >= 80) return "Excellent work! You have a strong grasp of ChatGPT's internal processing! 🎯";
+            if (percentage >= 60) return "Good job! You're getting the hang of how AI language models work! 💪";
+            if (percentage >= 40) return "Not bad! Review the simulator and try again to improve! 📚";
+            return "Keep learning! Go through the simulator again and pay close attention to each stage! 🚀";
+        }
+
+        // Initialize quiz when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            renderQuiz();
+        });
+
+    </script>
     <script>
         let isProcessing = false;
 

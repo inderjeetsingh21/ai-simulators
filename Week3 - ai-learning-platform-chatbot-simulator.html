@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Learning Platform - Interactive Chatbot Trainer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .panel h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .lesson-section {
+            margin-bottom: 25px;
+        }
+
+        .lesson-section h3 {
+            color: #764ba2;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .lesson-section p {
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .training-area {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .training-pair {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+
+        .training-pair label {
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .training-pair input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .training-pair input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .remove-pair-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .remove-pair-btn:hover {
+            background: #cc0000;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-training-btn, .clear-btn, .load-examples-btn {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .add-training-btn:hover {
+            background: #5f3a82;
+        }
+
+        .clear-btn {
+            background: #ff6b6b;
+        }
+
+        .clear-btn:hover {
+            background: #ee5a5a;
+        }
+
+        .load-examples-btn {
+            background: #51cf66;
+        }
+
+        .load-examples-btn:hover {
+            background: #40c057;
+        }
+
+        .chatbot-interface {
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.bot {
+            background: white;
+            border: 2px solid #e0e0e0;
+        }
+
+        .message strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .confidence-indicator {
+            margin-top: 8px;
+            padding: 6px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .confidence-bar {
+            height: 4px;
+            background: linear-gradient(to right, #ff6b6b, #ffd43b, #51cf66);
+            border-radius: 2px;
+            margin-top: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .send-btn:hover {
+            background: #5568d3;
+        }
+
+        .model-selector {
+            margin-bottom: 20px;
+        }
+
+        .model-selector label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .model-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .slider-container {
+            margin-bottom: 20px;
+        }
+
+        .slider-container label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-wrapper input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+        }
+
+        .slider-wrapper input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .slider-wrapper input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+        }
+
+        .temp-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .info-box {
+            background: #e7f5ff;
+            border-left: 4px solid #339af0;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .stats-panel {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stats-panel h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .quick-questions {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .quick-questions h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .quick-question-btn {
+            display: inline-block;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .quick-question-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .educational-tip {
+            background: #fff3bf;
+            border-left: 4px solid #fab005;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        .educational-tip.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .bottom-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 968px) {
+            .main-content, .bottom-panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .highlight {
+            background: #fff3bf;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Learning Platform</h1>
+            <p>Interactive Chatbot Trainer - Learn How AI Works!</p>
+        </div>
+
+        <div class="main-content">
+            <div class="panel">
+                <h2>🎯 Train Your AI</h2>
+                
+                <div class="info-box">
+                    💡 <strong>How it works:</strong> Add question-answer pairs below to teach your AI. The more examples you add, the smarter it gets!
+                </div>
+
+                <div class="training-area" id="trainingPairs">
+                    <!-- Training pairs will be loaded here -->
+                </div>
+
+                <div class="button-group">
+                    <button class="add-training-btn" onclick="addTrainingPair()">➕ Add Pair</button>
+                    <button class="load-examples-btn" onclick="loadExampleData()">📚 Load Examples</button>
+                    <button class="clear-btn" onclick="clearTraining()">🗑️ Clear All</button>
+                </div>
+
+                <div class="stats-panel">
+                    <h3>📊 Training Statistics</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Training Pairs:</span>
+                        <span class="stat-value" id="trainingCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Conversations:</span>
+                        <span class="stat-value" id="conversationCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Successful Matches:</span>
+                        <span class="stat-value" id="matchCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Success Rate:</span>
+                        <span class="stat-value" id="successRate">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>💬 Chat with Your AI</h2>
+                
+                <div class="model-selector">
+                    <label>🔧 Model Type:</label>
+                    <select id="modelType" onchange="updateModelInfo()">
+                        <option value="exact">Exact Match (Strictest)</option>
+                        <option value="keyword">Keyword Match (Flexible)</option>
+                        <option value="smart" selected>Smart Match (Most Realistic)</option>
+                    </select>
+                    <div class="info-box" id="modelInfo" style="margin-top: 10px;"></div>
+                </div>
+
+                <div class="slider-container">
+                    <label>🌡️ Temperature (Creativity): <span class="temp-value" id="tempValue">0.5</span></label>
+                    <div class="slider-wrapper">
+                        <span style="font-size: 0.85em; color: #666;">Conservative</span>
+                        <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.5" oninput="updateTemperature()">
+                        <span style="font-size: 0.85em; color: #666;">Creative</span>
+                    </div>
+                    <div class="info-box" style="margin-top: 8px; font-size: 0.85em;">
+                        <span id="tempDescription">Balanced between consistency and creativity</span>
+                    </div>
+                </div>
+
+                <div class="quick-questions">
+                    <h4>💡 Try These Questions:</h4>
+                    <div id="quickQuestionsContainer"></div>
+                </div>
+
+                <div class="chatbot-interface">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot">
+                            <strong>🤖 AI Assistant</strong>
+                            <div>Hi! I'm your AI chatbot. Train me by adding question-answer pairs on the left, then ask me anything! 🎓</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <input type="text" id="userInput" placeholder="Type your question here..." onkeypress="handleKeyPress(event)">
+                        <button class="send-btn" onclick="sendMessage()">Send 🚀</button>
+                    </div>
+                </div>
+
+                <div class="educational-tip" id="educationalTip"></div>
+            </div>
+        </div>
+
+        <div class="bottom-panels">
+            <div class="panel">
+                <h2>🎓 Learning Concepts</h2>
+                <div class="lesson-section">
+                    <h3>🧠 What is Machine Learning?</h3>
+                    <p>Instead of programming every possible response, we give the AI examples and it learns patterns. Just like how you learned to recognize cats by seeing many cat pictures!</p>
+                </div>
+                
+                <div class="lesson-section">
+                    <h3>📊 Training Data</h3>
+                    <p>The question-answer pairs you create are "training data". Real AI models are trained on millions or billions of examples to become really smart!</p>
+                </div>
+                
+                <div class="lesson-section">
+                    <h3>🎯 Pattern Matching</h3>
+                    <p>Your chatbot looks for patterns in your question and matches it to what it learned. Different matching methods work differently:</p>
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li><strong>Exact Match:</strong> Must match perfectly (like typing a password)</li>
+                        <li><strong>Keyword Match:</strong> Looks for matching words (like search engines)</li>
+                        <li><strong>Smart Match:</strong> Understands similar meanings (like real AI)</li>
+                    </ul>
+                </div>
+                
+                <div class="lesson-section">
+                    <h3>🌡️ Temperature/Creativity</h3>
+                    <p>Temperature controls randomness in AI responses:</p>
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li><strong>Low (0.0-0.3):</strong> Same answer every time, very predictable</li>
+                        <li><strong>Medium (0.4-0.6):</strong> Balanced, slight variations</li>
+                        <li><strong>High (0.7-1.0):</strong> Creative, different answers each time</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>🚀 Try These Experiments!</h2>
+                <div class="lesson-section">
+                    <h3>Experiment 1: Model Types</h3>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>Train your AI with "What is your name?" → "I'm AI Helper!"</li>
+                        <li>Try asking "what's your name?" with different models</li>
+                        <li>Notice: Exact match fails, but Smart match works!</li>
+                    </ol>
+                </div>
+
+                <div class="lesson-section">
+                    <h3>Experiment 2: Temperature Effects</h3>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>Set temperature to 0.0 and ask the same question 5 times</li>
+                        <li>Now set it to 1.0 and ask the same question 5 times</li>
+                        <li>Notice how answers change with higher temperature!</li>
+                    </ol>
+                </div>
+
+                <div class="lesson-section">
+                    <h3>Experiment 3: Training Data Quality</h3>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>Add only 1-2 training pairs and test it</li>
+                        <li>Add 10+ training pairs covering different topics</li>
+                        <li>Notice how more training makes the AI smarter!</li>
+                    </ol>
+                </div>
+
+                <div class="lesson-section">
+                    <h3>Challenge: Build a Subject Expert!</h3>
+                    <p>Try creating an AI expert in a specific topic (like space, animals, or sports) by adding lots of related training pairs. Can you make it answer 10 questions in a row correctly?</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let trainingData = [];
+        let conversationHistory = [];
+        let stats = {
+            trainingCount: 0,
+            conversationCount: 0,
+            matchCount: 0
+        };
+
+        // Example training data sets
+        const exampleDataSets = {
+            basic: [
+                { question: "what is ai", answer: "AI stands for Artificial Intelligence. It's when computers learn to think and make decisions like humans!" },
+                { question: "how are you", answer: "I'm doing great! Thanks for asking. How can I help you today?" },
+                { question: "what is your name", answer: "I'm an AI Assistant created to help answer your questions!" },
+                { question: "what can you do", answer: "I can answer questions based on what you've taught me. The more you train me, the smarter I become!" },
+                { question: "tell me a joke", answer: "Why did the AI go to school? To improve its neural network! 😄" },
+                { question: "what is machine learning", answer: "Machine learning is when computers learn from examples instead of being programmed with specific rules!" }
+            ],
+            science: [
+                { question: "what is gravity", answer: "Gravity is the force that pulls objects toward each other. It's why we stay on the ground and planets orbit the sun!" },
+                { question: "what is photosynthesis", answer: "Photosynthesis is how plants make food using sunlight, water, and carbon dioxide!" },
+                { question: "what is the solar system", answer: "The solar system is our sun and all the planets, moons, and other objects that orbit around it!" },
+                { question: "what causes rain", answer: "Rain happens when water vapor in clouds cools down and turns back into liquid water droplets that fall to Earth!" },
+                { question: "what is dna", answer: "DNA is like an instruction manual for living things. It tells your body how to grow and what characteristics you'll have!" }
+            ],
+            animals: [
+                { question: "what do dogs eat", answer: "Dogs eat meat, vegetables, and specially made dog food that has all the nutrients they need!" },
+                { question: "how long do cats live", answer: "Cats typically live 12-18 years, but some can live into their 20s with good care!" },
+                { question: "what is the biggest animal", answer: "The blue whale is the largest animal on Earth! It can grow up to 100 feet long!" },
+                { question: "do penguins fly", answer: "Penguins can't fly in the air, but they're amazing swimmers! They 'fly' through the water using their flippers!" },
+                { question: "where do polar bears live", answer: "Polar bears live in the Arctic, on sea ice and in coastal areas near the North Pole!" }
+            ]
+        };
+
+        function initializeApp() {
+            loadExampleData();
+            updateModelInfo();
+            updateTemperature();
+            updateQuickQuestions();
+        }
+
+        function loadExampleData() {
+            // Clear current training
+            document.getElementById('trainingPairs').innerHTML = '';
+            
+            // Load all example data sets
+            const allExamples = [
+                ...exampleDataSets.basic,
+                ...exampleDataSets.science.slice(0, 3),
+                ...exampleDataSets.animals.slice(0, 3)
+            ];
+
+            allExamples.forEach(example => {
+                addTrainingPairWithData(example.question, example.answer);
+            });
+
+            showEducationalTip("🎉 Example data loaded! Now you have a trained AI. Try asking some questions!");
+        }
+
+        function addTrainingPair(question = '', answer = '') {
+            addTrainingPairWithData(question, answer);
+        }
+
+        function addTrainingPairWithData(question = '', answer = '') {
+            const container = document.getElementById('trainingPairs');
+            const newPair = document.createElement('div');
+            newPair.className = 'training-pair';
+            newPair.innerHTML = `
+                <button class="remove-pair-btn" onclick="removeTrainingPair(this)">×</button>
+                <label>Question:</label>
+                <input type="text" placeholder="e.g., What is AI?" class="question-input" value="${question}">
+                <label style="margin-top: 8px;">Answer:</label>
+                <input type="text" placeholder="e.g., AI is artificial intelligence..." class="answer-input" value="${answer}">
+            `;
+            container.appendChild(newPair);
+            stats.trainingCount++;
+            updateStats();
+            updateQuickQuestions();
+        }
+
+        function removeTrainingPair(button) {
+            button.parentElement.remove();
+            stats.trainingCount--;
+            updateStats();
+            updateQuickQuestions();
+        }
+
+        function clearTraining() {
+            if (confirm('Are you sure you want to clear all training data?')) {
+                document.getElementById('trainingPairs').innerHTML = '';
+                addTrainingPair();
+                trainingData = [];
+                stats.trainingCount = 1;
+                stats.matchCount = 0;
+                updateStats();
+                updateQuickQuestions();
+            }
+        }
+
+        function collectTrainingData() {
+            trainingData = [];
+            const pairs = document.querySelectorAll('.training-pair');
+            pairs.forEach(pair => {
+                const question = pair.querySelector('.question-input').value.trim();
+                const answer = pair.querySelector('.answer-input').value.trim();
+                if (question && answer) {
+                    trainingData.push({ 
+                        question: question.toLowerCase(), 
+                        answer,
+                        originalQuestion: question
+                    });
+                }
+            });
+        }
+
+        function findBestMatch(userQuestion) {
+            collectTrainingData();
+            
+            if (trainingData.length === 0) {
+                showEducationalTip("⚠️ No training data! Click 'Load Examples' to get started, or add your own question-answer pairs.");
+                return { 
+                    answer: "I haven't been trained yet! Please add some training examples on the left, or click 'Load Examples' to get started.", 
+                    confidence: 0,
+                    matchType: 'none'
+                };
+            }
+
+            const modelType = document.getElementById('modelType').value;
+            const userQ = userQuestion.toLowerCase().trim();
+            let bestMatch = null;
+            let bestScore = 0;
+            let matchType = 'none';
+
+            trainingData.forEach(data => {
+                let score = 0;
+                
+                if (modelType === 'exact') {
+                    // Exact matching - must be identical
+                    score = userQ === data.question ? 1.0 : 0;
+                    if (score === 1.0) matchType = 'exact';
+                } else if (modelType === 'keyword') {
+                    // Keyword matching - count matching words
+                    const userWords = userQ.split(/\s+/).filter(w => w.length > 2);
+                    const trainWords = data.question.split(/\s+/).filter(w => w.length > 2);
+                    
+                    if (userWords.length === 0 || trainWords.length === 0) {
+                        score = 0;
+                    } else {
+                        const matches = userWords.filter(word => 
+                            trainWords.some(tw => tw.includes(word) || word.includes(tw))
+                        ).length;
+                        score = matches / Math.max(userWords.length, trainWords.length);
+                        if (score > 0) matchType = 'keyword';
+                    }
+                } else if (modelType === 'smart') {
+                    // Smart matching - similarity scoring
+                    score = calculateSmartSimilarity(userQ, data.question);
+                    if (score > 0.3) matchType = 'smart';
+                }
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = data;
+                }
+            });
+
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            const threshold = modelType === 'exact' ? 1.0 : (modelType === 'keyword' ? 0.25 : 0.3);
+
+            if (bestScore >= threshold && bestMatch) {
+                stats.matchCount++;
+                updateStats();
+                
+                // Show educational tip based on match type
+                if (matchType === 'exact') {
+                    showEducationalTip("✅ Exact match! Your question matched the training data perfectly.");
+                } else if (matchType === 'keyword') {
+                    showEducationalTip(`🔍 Keyword match! Found ${Math.round(bestScore * 100)}% word overlap with training data.`);
+                } else if (matchType === 'smart') {
+                    showEducationalTip(`🧠 Smart match! AI found a similar question with ${Math.round(bestScore * 100)}% confidence.`);
+                }
+                
+                return {
+                    answer: addCreativity(bestMatch.answer, temperature),
+                    confidence: bestScore,
+                    matchType: matchType
+                };
+            } else {
+                showEducationalTip("❌ No match found! Try asking something closer to your training data, or add more training examples.");
+                return {
+                    answer: `I'm not sure how to answer that. I haven't been trained on this topic yet! Try asking about: ${getSampleQuestions()}`,
+                    confidence: 0,
+                    matchType: 'none'
+                };
+            }
+        }
+
+        function calculateSmartSimilarity(str1, str2) {
+            const words1 = str1.split(/\s+/).filter(w => w.length > 2);
+            const words2 = str2.split(/\s+/).filter(w => w.length > 2);
+            
+            if (words1.length === 0 || words2.length === 0) return 0;
+            
+            // Count exact matches and partial matches
+            let exactMatches = 0;
+            let partialMatches = 0;
+            
+            words1.forEach(w1 => {
+                words2.forEach(w2 => {
+                    if (w1 === w2) {
+                        exactMatches++;
+                    } else if (w1.length > 3 && w2.length > 3) {
+                        if (w1.includes(w2) || w2.includes(w1)) {
+                            partialMatches += 0.5;
+                        }
+                    }
+                });
+            });
+            
+            const totalMatches = exactMatches + partialMatches;
+            const maxWords = Math.max(words1.length, words2.length);
+            
+            // Calculate similarity score
+            const wordScore = totalMatches / maxWords;
+            
+            // Bonus for length similarity
+            const lengthSimilarity = 1 - Math.abs(words1.length - words2.length) / maxWords;
+            
+            return (wordScore * 0.8) + (lengthSimilarity * 0.2);
+        }
+
+        function addCreativity(answer, temperature) {
+            if (temperature < 0.3) return answer;
+            
+            const creativityVariations = [
+                { prefix: "", suffix: "" },
+                { prefix: "", suffix: " Hope that helps!" },
+                { prefix: "", suffix: " Let me know if you need more info!" },
+                { prefix: "Great question! ", suffix: "" },
+                { prefix: "", suffix: " 😊" },
+                { prefix: "I think ", suffix: "" },
+                { prefix: "Based on what I know, ", suffix: "" },
+                { prefix: "", suffix: " Does that make sense?" },
+                { prefix: "Here's what I learned: ", suffix: "" },
+                { prefix: "", suffix: " Feel free to ask more!" }
+            ];
+            
+            // Higher temperature = more likely to add variation
+            const randomThreshold = Math.random();
+            const temperatureThreshold = temperature * 0.7;
+            
+            if (randomThreshold < temperatureThreshold) {
+                const variation = creativityVariations[Math.floor(Math.random() * creativityVariations.length)];
+                return variation.prefix + answer + variation.suffix;
+            }
+            
+            return answer;
+        }
+
+        function getSampleQuestions() {
+            if (trainingData.length === 0) return "something!";
+            const samples = trainingData.slice(0, 3).map(d => d.originalQuestion);
+            return samples.join(", ");
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            addMessage('user', message);
+            input.value = '';
+
+            // Show typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = '<strong>🤖 AI Assistant</strong><div>Thinking... 💭</div>';
+            document.getElementById('chatMessages').appendChild(typingDiv);
+            
+            setTimeout(() => {
+                document.getElementById('typing-indicator')?.remove();
+                
+                const response = findBestMatch(message);
+                addMessage('bot', response.answer, response.confidence, response.matchType);
+                
+                stats.conversationCount++;
+                updateStats();
+            }, 500);
+        }
+
+        function addMessage(sender, text, confidence = null, matchType = null) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const label = sender === 'user' ? '👤 You' : '🤖 AI Assistant';
+            let confidenceHTML = '';
+            
+            if (sender === 'bot' && confidence !== null) {
+                const confidencePercent = Math.round(confidence * 100);
+                const confidenceColor = confidence > 0.7 ? '#51cf66' : (confidence > 0.4 ? '#ffd43b' : '#ff6b6b');
+                confidenceHTML = `
+                    <div class="confidence-indicator">
+                        <div>Match Confidence: <strong>${confidencePercent}%</strong> | Type: <strong>${matchType || 'none'}</strong></div>
+                        <div class="confidence-bar" style="width: ${confidencePercent}%; background: ${confidenceColor};"></div>
+                    </div>
+                `;
+            }
+            
+            messageDiv.innerHTML = `
+                <strong>${label}</strong>
+                <div>${text}</div>
+                ${confidenceHTML}
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function updateTemperature() {
+            const temp = parseFloat(document.getElementById('temperature').value);
+            document.getElementById('tempValue').textContent = temp.toFixed(1);
+            
+            let description = '';
+            if (temp < 0.3) {
+                description = '❄️ Very Conservative - Same answer every time, very predictable';
+            } else if (temp < 0.5) {
+                description = '🧊 Conservative - Mostly consistent with slight variations';
+            } else if (temp < 0.7) {
+                description = '⚖️ Balanced - Mix of consistency and creativity';
+            } else if (temp < 0.9) {
+                description = '🔥 Creative - Varied responses with personality';
+            } else {
+                description = '🌟 Very Creative - Highly varied and unpredictable responses';
+            }
+            
+            document.getElementById('tempDescription').textContent = description;
+        }
+
+        function updateModelInfo() {
+            const modelType = document.getElementById('modelType').value;
+            const infoBox = document.getElementById('modelInfo');
+            
+            const modelDescriptions = {
+                'exact': {
+                    name: 'Exact Match',
+                    desc: '🎯 Only responds if your question matches EXACTLY (character by character). Very strict but predictable. Try typing "what is ai" exactly as trained.',
+                    example: 'Question must match perfectly: "what is ai" ✓ but "What is AI?" ✗'
+                },
+                'keyword': {
+                    name: 'Keyword Match',
+                    desc: '🔍 Looks for matching keywords in your question. More flexible than exact match. Works like search engines!',
+                    example: 'Matches by words: "tell me about ai" would match "what is ai" training data'
+                },
+                'smart': {
+                    name: 'Smart Match',
+                    desc: '🧠 Uses similarity scoring to find close matches. Most flexible and realistic to real AI. Understands similar meanings!',
+                    example: 'Finds similar questions: "explain ai" matches "what is ai" even with different words'
+                }
+            };
+            
+            const model = modelDescriptions[modelType];
+            infoBox.innerHTML = `
+                <strong>${model.name}:</strong> ${model.desc}
+                <div style="margin-top: 6px; padding: 6px; background: white; border-radius: 4px; font-size: 0.9em;">
+                    <em>Example: ${model.example}</em>
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            document.getElementById('trainingCount').textContent = stats.trainingCount;
+            document.getElementById('conversationCount').textContent = stats.conversationCount;
+            document.getElementById('matchCount').textContent = stats.matchCount;
+            
+            const successRate = stats.conversationCount > 0 
+                ? Math.round((stats.matchCount / stats.conversationCount) * 100) 
+                : 0;
+            document.getElementById('successRate').textContent = successRate + '%';
+        }
+
+        function updateQuickQuestions() {
+            collectTrainingData();
+            const container = document.getElementById('quickQuestionsContainer');
+            
+            if (trainingData.length === 0) {
+                container.innerHTML = '<span style="color: #999; font-size: 0.9em;">Add training data to see suggested questions</span>';
+                return;
+            }
+            
+            // Get up to 5 random questions from training data
+            const shuffled = [...trainingData].sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, Math.min(5, trainingData.length));
+            
+            container.innerHTML = selected.map(data => 
+                `<button class="quick-question-btn" onclick="askQuickQuestion('${data.originalQuestion.replace(/'/g, "\\'")}')">${data.originalQuestion}</button>`
+            ).join('');
+        }
+
+        function askQuickQuestion(question) {
+            document.getElementById('userInput').value = question;
+            sendMessage();
+        }
+
+        function showEducationalTip(message) {
+            const tipBox = document.getElementById('educationalTip');
+            tipBox.textContent = message;
+            tipBox.classList.add('show');
+            
+            setTimeout(() => {
+                tipBox.classList.remove('show');
+            }, 5000);
+        }
+
+        // Initialize the app when page loads
+        window.onload = initializeApp;
+    </script>
+</body>
+</html>
