@@ -1,4 +1,5 @@
 # AI Learning Simulator
+### ai-learning-simulator.html
 
 - An interactive educational tool designed for teenagers (ages 13-18) to learn about AI, Machine Learning, and Automation through hands-on exploration.
 
@@ -48,7 +49,8 @@
 
 
 
-# ChatGPT Behind the Scenes Simulator - Key Features
+# ChatGPT Behind the Scenes Simulator
+### chatgpt-behind-scenes-simulator.html
 
 ## Overview
 An advanced interactive simulator that reveals the internal processing stages ChatGPT goes through when responding to user prompts. Perfect for students learning about large language models and AI processing.
@@ -66,6 +68,7 @@ An advanced interactive simulator that reveals the internal processing stages Ch
 
 
 # Neural Network Math Simulator
+### neural-network-math-simulator.html
 
 ## 🎯 Features
 
@@ -83,6 +86,7 @@ An advanced interactive simulator that reveals the internal processing stages Ch
 
 
 # Neural Network Text Summarizer
+### neural_network_text_summarizer_simulator.html
 
 ## 🎯 Features
 
@@ -96,7 +100,8 @@ An advanced interactive simulator that reveals the internal processing stages Ch
 
 
 
-# Enhanced AI Chatbot Simulator
+# Enhanced AI Chatbot Simulator 
+### ai-learning-platform-chatbot-simulator.html
 
 ## 📋 Overview
 
