@@ -6,11 +6,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you use these simulators in your projects, please provide attribution by:
 - Linking back to this GitHub repository
-- Crediting [Your Name/Sikh AI Club of Bay Area]
+- Crediting [Inderjeet Bhambra / Sikh AI Club of Bay Area]
 - Mentioning the project in your documentation
 
 Example attribution:
-"AI Simulators created by Inderjeet Bhambra, available at [\[GitHub URL\]](https://github.com/inderjeetsingh21/ai-simulators)"
+"AI Simulators created by Inderjeet Bhambra (Sikh AI Club of Bay Area), available at [\[GitHub URL\]](https://github.com/inderjeetsingh21/ai-simulators)"
 
 ---
 ---
