@@ -16,7 +16,7 @@ Example attribution:
 ---
 
 # AI Learning Simulator
-### ai-learning-simulator.html (ai-learning-simulator.html)
+### [ai-learning-simulator.html](ai-learning-simulator.html)
 
 - An interactive educational tool designed for teenagers (ages 13-18) to learn about AI, Machine Learning, and Automation through hands-on exploration.
 
@@ -67,7 +67,7 @@ Example attribution:
 ---
 
 # AI Learning Simulator
-### ai-content-generation-simulator.html
+### [ai-content-generation-simulator.html](ai-content-generation-simulator.html)
 
 An interactive simulator that demonstrates how AI models generate text using different creative approaches.
 Explore various AI personalities and see how temperature, length, and model selection affect content generation.
@@ -82,7 +82,7 @@ Explore various AI personalities and see how temperature, length, and model sele
 ---
 
 # 🧠 Inside AI's Mind
-### ai-mind-simulator.html
+### [ai-mind-simulator.html](ai-mind-simulator.html)
 
 A visual exploration of how AI thinks and processes prompts to generate responses.
 See the internal decision-making process and neural network activity in real-time.
@@ -97,7 +97,7 @@ See the internal decision-making process and neural network activity in real-tim
 ---
 
 # 🎯 LoRA Fine-Tuning Visualizer
-### lora-finetuning-visualizer.html
+### [lora-finetuning-visualizer.html](lora-finetuning-visualizer.html)
 
 An educational tool that explains Low-Rank Adaptation (LoRA) for efficient AI model fine-tuning.
 Understand the differences between full fine-tuning and LoRA with interactive visualizations.
@@ -112,7 +112,7 @@ Understand the differences between full fine-tuning and LoRA with interactive vi
 ---
 
 # 📊 AI Training Simulator
-### ai-training-simulator.html
+### [ai-training-simulator.html](ai-training-simulator.html)
 
 A comprehensive simulator that teaches how AI models learn from data through training.
 Experience the complete training lifecycle from dataset selection to model evaluation.
@@ -127,7 +127,7 @@ Experience the complete training lifecycle from dataset selection to model evalu
 ---
 
 # ⚠️ AI Hallucination Simulator
-### ai-hallucination-simulator.html
+### [ai-hallucination-simulator.html](ai-hallucination-simulator.html)
 
 An interactive demonstration of AI hallucinations and techniques to prevent false information generation.
 Learn to identify, understand, and mitigate AI-generated misinformation.
@@ -142,7 +142,7 @@ Learn to identify, understand, and mitigate AI-generated misinformation.
 ---
 
 # ChatGPT Behind the Scenes Simulator
-### chatgpt-behind-scenes-simulator.html
+### [chatgpt-behind-scenes-simulator.html](chatgpt-behind-scenes-simulator.html)
 
 ## Overview
 An advanced interactive simulator that reveals the internal processing stages ChatGPT goes through when responding to user prompts. Perfect for students learning about large language models and AI processing.
@@ -160,7 +160,7 @@ An advanced interactive simulator that reveals the internal processing stages Ch
 ---
 
 # Neural Network Math Simulator
-### neural-network-math-simulator.html
+### [neural-network-math-simulator.html](neural-network-math-simulator.html)
 
 ## 🎯 Features
 
@@ -178,7 +178,7 @@ An advanced interactive simulator that reveals the internal processing stages Ch
 ---
 
 # Neural Network Text Summarizer
-### neural_network_text_summarizer_simulator.html
+### [neural_network_text_summarizer_simulator.html](neural_network_text_summarizer_simulator.html)
 
 ## 🎯 Features
 
@@ -193,7 +193,7 @@ An advanced interactive simulator that reveals the internal processing stages Ch
 ---
 
 # Enhanced AI Chatbot Simulator 
-### ai-learning-platform-chatbot-simulator.html
+### [ai-learning-platform-chatbot-simulator.html](ai-learning-platform-chatbot-simulator.html)
 
 ## 📋 Overview
 
