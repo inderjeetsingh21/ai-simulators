@@ -15,7 +15,7 @@ Example attribution:
 ---
 ---
 
-# AI Learning Simulator
+# 📊 AI Learning Simulator
 ### [ai-learning-simulator.html](ai-learning-simulator.html)
 
 - An interactive educational tool designed for teenagers (ages 13-18) to learn about AI, Machine Learning, and Automation through hands-on exploration.
@@ -66,7 +66,7 @@ Example attribution:
 
 ---
 
-# AI Learning Simulator
+# 📊 AI Learning Simulator
 ### [ai-content-generation-simulator.html](ai-content-generation-simulator.html)
 
 An interactive simulator that demonstrates how AI models generate text using different creative approaches.
@@ -96,7 +96,7 @@ See the internal decision-making process and neural network activity in real-tim
 
 ---
 
-# 🎯 LoRA Fine-Tuning Visualizer
+# 📊 LoRA Fine-Tuning Visualizer
 ### [lora-finetuning-visualizer.html](lora-finetuning-visualizer.html)
 
 An educational tool that explains Low-Rank Adaptation (LoRA) for efficient AI model fine-tuning.
@@ -126,7 +126,7 @@ Experience the complete training lifecycle from dataset selection to model evalu
 
 ---
 
-# ⚠️ AI Hallucination Simulator
+# 📊 AI Hallucination Simulator
 ### [ai-hallucination-simulator.html](ai-hallucination-simulator.html)
 
 An interactive demonstration of AI hallucinations and techniques to prevent false information generation.
@@ -141,7 +141,7 @@ Learn to identify, understand, and mitigate AI-generated misinformation.
 
 ---
 
-# ChatGPT Behind the Scenes Simulator
+# 📊 ChatGPT Behind the Scenes Simulator
 ### [chatgpt-behind-scenes-simulator.html](chatgpt-behind-scenes-simulator.html)
 
 ## Overview
@@ -159,7 +159,7 @@ An advanced interactive simulator that reveals the internal processing stages Ch
 
 ---
 
-# Neural Network Math Simulator
+# 📊 Neural Network Math Simulator
 ### [neural-network-math-simulator.html](neural-network-math-simulator.html)
 
 ## 🎯 Features
@@ -177,7 +177,7 @@ An advanced interactive simulator that reveals the internal processing stages Ch
 
 ---
 
-# Neural Network Text Summarizer
+# 📊 Neural Network Text Summarizer
 ### [neural_network_text_summarizer_simulator.html](neural_network_text_summarizer_simulator.html)
 
 ## 🎯 Features
@@ -192,7 +192,7 @@ An advanced interactive simulator that reveals the internal processing stages Ch
 
 ---
 
-# Enhanced AI Chatbot Simulator 
+# 📊 Enhanced AI Chatbot Simulator 
 ### [ai-learning-platform-chatbot-simulator.html](ai-learning-platform-chatbot-simulator.html)
 
 ## 📋 Overview
