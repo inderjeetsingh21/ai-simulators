@@ -49,7 +49,7 @@
 
 ---
 
-# AI Learning Simulators
+# AI Learning Simulator
 ### ai-content-generation-simulator.html
 
 An interactive simulator that demonstrates how AI models generate text using different creative approaches.
@@ -121,19 +121,6 @@ Learn to identify, understand, and mitigate AI-generated misinformation.
 - **Uncertainty Indicators**: Visual markers showing high, medium, and low confidence levels in AI responses
 - **Prevention Techniques**: Learn verification methods, context grounding, confidence thresholds, and RAG (Retrieval-Augmented Generation)
 - **Real-time Comparison**: See side-by-side examples of problematic vs improved prompts and responses
-
----
-
-## 🎓 Educational Value
-
-These simulators provide hands-on learning experiences for understanding:
-- How large language models process and generate text
-- The importance of prompt engineering and model selection
-- Training methodologies and fine-tuning techniques
-- Common pitfalls like hallucinations and how to avoid them
-- The internal mechanics of neural networks and attention mechanisms
-
-Perfect for students, developers, educators, and anyone curious about AI technology!
 
 ---
 
