@@ -1,5 +1,22 @@
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Attribution
+
+If you use these simulators in your projects, please provide attribution by:
+- Linking back to this GitHub repository
+- Crediting [Your Name/Sikh AI Club of Bay Area]
+- Mentioning the project in your documentation
+
+Example attribution:
+"AI Simulators created by [Inderjeet Bhambra], available at [\[GitHub URL\]](https://github.com/inderjeetsingh21/ai-simulators)"
+
+---
+---
+
 # AI Learning Simulator
-### ai-learning-simulator.html
+### ai-learning-simulator.html (ai-learning-simulator.html)
 
 - An interactive educational tool designed for teenagers (ages 13-18) to learn about AI, Machine Learning, and Automation through hands-on exploration.
 
