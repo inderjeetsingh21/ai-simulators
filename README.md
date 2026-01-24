@@ -10,7 +10,7 @@ If you use these simulators in your projects, please provide attribution by:
 - Mentioning the project in your documentation
 
 Example attribution:
-"AI Simulators created by [Inderjeet Bhambra], available at [\[GitHub URL\]](https://github.com/inderjeetsingh21/ai-simulators)"
+"AI Simulators created by Inderjeet Bhambra, available at [\[GitHub URL\]](https://github.com/inderjeetsingh21/ai-simulators)"
 
 ---
 ---
