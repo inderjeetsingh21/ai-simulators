@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Training Simulator - Neural Network Weight Optimization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px 40px;
+            border-bottom: 3px solid #1e3c72;
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e1e8ed;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9em;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .input-control {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e8ed;
+        }
+        
+        .input-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #34495e;
+        }
+        
+        .input-value {
+            font-weight: 700;
+            color: #1e3c72;
+            font-size: 1.1em;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #dfe6e9;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1e3c72;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1e3c72;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px 20px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #1565c0;
+        }
+        
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .model-panel {
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            background: white;
+        }
+        
+        .model-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+        
+        .model-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .model-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-untrained {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-optimized {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .model-body {
+            padding: 25px;
+        }
+        
+        .weight-section-title {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .weight-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .weight-name {
+            flex: 0 0 180px;
+            font-size: 0.9em;
+            color: #34495e;
+            font-weight: 500;
+        }
+        
+        .weight-bar-wrapper {
+            flex: 1;
+            height: 24px;
+            background: #ecf0f1;
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+        
+        .weight-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+        }
+        
+        .weight-bar.negative {
+            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .weight-bar-label {
+            color: white;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+        
+        .weight-value {
+            flex: 0 0 60px;
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .computation-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+        
+        .computation-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .computation-line {
+            padding: 4px 0;
+            color: #34495e;
+        }
+        
+        .computation-result {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid #dee2e6;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+        
+        .output-panel {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .output-label {
+            font-size: 0.8em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .output-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .output-score {
+            font-size: 1em;
+            opacity: 0.85;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 30px 0;
+            border-top: 2px solid #e1e8ed;
+            border-bottom: 2px solid #e1e8ed;
+            margin: 30px 0;
+        }
+        
+        button {
+            padding: 12px 28px;
+            font-size: 0.95em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-tertiary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .metrics {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-label {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-top: 5px;
+        }
+        
+        .documentation {
+            background: #f8f9fa;
+            border: 1px solid #e1e8ed;
+            border-radius: 6px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .documentation h3 {
+            color: #1e3c72;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .documentation-content {
+            font-size: 0.9em;
+            color: #34495e;
+        }
+        
+        .documentation-content strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .documentation-content p {
+            margin-bottom: 12px;
+        }
+        
+        @media (max-width: 768px) {
+            .models-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Neural Network Training Simulator</h1>
+            <p>Interactive demonstration of weight optimization and parameter learning in artificial intelligence models</p>
+        </div>
+        
+        <div class="content">
+            <!-- Input Features Section -->
+            <div class="section">
+                <div class="section-title">Input Features Configuration</div>
+                <div class="input-grid">
+                    <div class="input-control">
+                        <div class="input-label">
+                            <span>Temperature (°C)</span>
+                            <span class="input-value" id="value1">20</span>
+                        </div>
+                        <input type="range" id="input1" min="0" max="40" value="20" step="1">
+                    </div>
+                    <div class="input-control">
+                        <div class="input-label">
+                            <span>Sunshine Duration (hours)</span>
+                            <span class="input-value" id="value2">6</span>
+                        </div>
+                        <input type="range" id="input2" min="0" max="12" value="6" step="1">
+                    </div>
+                    <div class="input-control">
+                        <div class="input-label">
+                            <span>Wind Speed (km/h)</span>
+                            <span class="input-value" id="value3">15</span>
+                        </div>
+                        <input type="range" id="input3" min="0" max="50" value="15" step="1">
+                    </div>
+                </div>
+                <div class="info-box">
+                    <strong>Objective:</strong> Both models process identical input features but utilize different learned parameters (weights) to generate predictions for ice cream sales volume.
+                </div>
+            </div>
+            
+            <!-- Metrics Section -->
+            <div class="metrics">
+                <div class="metric-label">Training Iterations Completed</div>
+                <div class="metric-value" id="trainingCount">0</div>
+            </div>
+            
+            <!-- Models Grid -->
+            <div class="section">
+                <div class="section-title">Model Comparison Analysis</div>
+                <div class="models-grid">
+                    <!-- Model A -->
+                    <div class="model-panel">
+                        <div class="model-header">
+                            <div class="model-name">Model A: Baseline Configuration</div>
+                            <span class="model-status status-untrained">UNTRAINED</span>
+                        </div>
+                        <div class="model-body">
+                            <div class="weight-section-title">Weight Parameters</div>
+                            
+                            <div class="weight-row">
+                                <div class="weight-name">w₁ (Temperature)</div>
+                                <div class="weight-bar-wrapper">
+                                    <div class="weight-bar" id="barA1" style="width: 50%;">
+                                        <span class="weight-bar-label">50%</span>
+                                    </div>
+                                </div>
+                                <div class="weight-value" id="weightA1">0.50</div>
+                            </div>
+                            
+                            <div class="weight-row">
+                                <div class="weight-name">w₂ (Sunshine)</div>
+                                <div class="weight-bar-wrapper">
+                                    <div class="weight-bar" id="barA2" style="width: 30%;">
+                                        <span class="weight-bar-label">30%</span>
+                                    </div>
+                                </div>
+                                <div class="weight-value" id="weightA2">0.30</div>
+                            </div>
+                            
+                            <div class="weight-row">
+                                <div class="weight-name">w₃ (Wind Speed)</div>
+                                <div class="weight-bar-wrapper">
+                                    <div class="weight-bar" id="barA3" style="width: 20%;">
+                                        <span class="weight-bar-label">20%</span>
+                                    </div>
+                                </div>
+                                <div class="weight-value" id="weightA3">0.20</div>
+                            </div>
+                            
+                            <div class="computation-box">
+                                <div class="computation-title">Forward Propagation Calculation</div>
+                                <div id="calcA"></div>
+                            </div>
+                            
+                            <div class="output-panel">
+                                <div class="output-label">Prediction Output</div>
+                                <div id="outputA"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Model B -->
+                    <div class="model-panel">
+                        <div class="model-header">
+                            <div class="model-name">Model B: Optimized Configuration</div>
+                            <span class="model-status status-optimized">FULLY TRAINED</span>
+                        </div>
+                        <div class="model-body">
+                            <div class="weight-section-title">Weight Parameters</div>
+                            
+                            <div class="weight-row">
+                                <div class="weight-name">w₁ (Temperature)</div>
+                                <div class="weight-bar-wrapper">
+                                    <div class="weight-bar" style="width: 70%;">
+                                        <span class="weight-bar-label">70%</span>
+                                    </div>
+                                </div>
+                                <div class="weight-value" id="weightB1">0.70</div>
+                            </div>
+                            
+                            <div class="weight-row">
+                                <div class="weight-name">w₂ (Sunshine)</div>
+                                <div class="weight-bar-wrapper">
+                                    <div class="weight-bar" style="width: 60%;">
+                                        <span class="weight-bar-label">60%</span>
+                                    </div>
+                                </div>
+                                <div class="weight-value" id="weightB2">0.60</div>
+                            </div>
+                            
+                            <div class="weight-row">
+                                <div class="weight-name">w₃ (Wind Speed)</div>
+                                <div class="weight-bar-wrapper">
+                                    <div class="weight-bar negative" style="width: 40%;">
+                                        <span class="weight-bar-label">40%</span>
+                                    </div>
+                                </div>
+                                <div class="weight-value" id="weightB3">-0.40</div>
+                            </div>
+                            
+                            <div class="computation-box">
+                                <div class="computation-title">Forward Propagation Calculation</div>
+                                <div id="calcB"></div>
+                            </div>
+                            
+                            <div class="output-panel">
+                                <div class="output-label">Prediction Output</div>
+                                <div id="outputB"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Controls -->
+            <div class="controls">
+                <button class="btn-primary" onclick="trainModels()">Execute Training Iteration</button>
+                <button class="btn-secondary" onclick="randomInputs()">Generate Random Inputs</button>
+                <button class="btn-tertiary" onclick="resetModels()">Reset Simulation</button>
+            </div>
+            
+            <!-- Documentation -->
+            <div class="documentation">
+                <h3>Technical Documentation</h3>
+                <div class="documentation-content">
+                    <p><strong>Overview:</strong> This simulator demonstrates fundamental concepts in supervised machine learning, specifically how neural networks utilize weighted parameters to process input features and generate predictions.</p>
+                    
+                    <p><strong>Input Features:</strong> Three environmental variables (temperature, sunshine duration, wind speed) serve as the input layer. These values are multiplied by their corresponding weight parameters during forward propagation.</p>
+                    
+                    <p><strong>Weight Parameters:</strong> Learned coefficients that determine the relative importance of each input feature. During training, these weights are iteratively adjusted through gradient descent optimization to minimize prediction error.</p>
+                    
+                    <p><strong>Model A (Baseline):</strong> Initialized with suboptimal weights representing an untrained state. The training function simulates gradient descent by incrementally adjusting weights toward optimal values.</p>
+                    
+                    <p><strong>Model B (Optimized):</strong> Pre-configured with optimal weight parameters. Note the negative weight for wind speed, indicating an inverse relationship with the target variable (higher wind correlates with lower ice cream sales).</p>
+                    
+                    <p><strong>Forward Propagation:</strong> The calculation process where inputs are multiplied by weights, summed with a bias term, and passed through the network to generate an output prediction.</p>
+                    
+                    <p><strong>Training Process:</strong> When "Execute Training Iteration" is selected, Model A's weights undergo supervised learning, progressively approximating Model B's optimal configuration. This simulates the backpropagation algorithm used in real neural network training.</p>
+                    
+                    <p><strong>Key Learning Objective:</strong> Understanding that identical inputs processed through different weight configurations yield different predictions, demonstrating why model training and parameter optimization are critical for AI performance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Model configurations
+        let modelA = {
+            weights: [0.5, 0.3, 0.2],
+            bias: 10
+        };
+        
+        let modelB = {
+            weights: [0.7, 0.6, -0.4],
+            bias: 5
+        };
+        
+        let trainingCount = 0;
+        
+        // Event listeners for input changes
+        document.getElementById('input1').addEventListener('input', update);
+        document.getElementById('input2').addEventListener('input', update);
+        document.getElementById('input3').addEventListener('input', update);
+        
+        function update() {
+            // Update displayed values
+            document.getElementById('value1').textContent = document.getElementById('input1').value;
+            document.getElementById('value2').textContent = document.getElementById('input2').value;
+            document.getElementById('value3').textContent = document.getElementById('input3').value;
+            
+            // Recalculate predictions
+            calculatePredictions();
+        }
+        
+        function calculatePredictions() {
+            const inputs = [
+                parseFloat(document.getElementById('input1').value),
+                parseFloat(document.getElementById('input2').value),
+                parseFloat(document.getElementById('input3').value)
+            ];
+            
+            const inputNames = ['Temperature', 'Sunshine', 'Wind Speed'];
+            
+            // Model A computation
+            let sumA = modelA.bias;
+            let calcTextA = `<div class="computation-line">Bias (b): ${modelA.bias}</div>`;
+            
+            for (let i = 0; i < 3; i++) {
+                const product = inputs[i] * modelA.weights[i];
+                sumA += product;
+                calcTextA += `<div class="computation-line">${inputNames[i]}: ${inputs[i]} × ${modelA.weights[i].toFixed(2)} = ${product.toFixed(2)}</div>`;
+            }
+            
+            calcTextA += `<div class="computation-result">Σ (Total Score) = ${sumA.toFixed(2)}</div>`;
+            document.getElementById('calcA').innerHTML = calcTextA;
+            
+            const predictionA = sumA > 30 ? "High Sales Probability" : sumA > 15 ? "Moderate Sales Probability" : "Low Sales Probability";
+            document.getElementById('outputA').innerHTML = `<div class="output-value">${predictionA}</div><div class="output-score">Score: ${sumA.toFixed(2)}</div>`;
+            
+            // Model B computation
+            let sumB = modelB.bias;
+            let calcTextB = `<div class="computation-line">Bias (b): ${modelB.bias}</div>`;
+            
+            for (let i = 0; i < 3; i++) {
+                const product = inputs[i] * modelB.weights[i];
+                sumB += product;
+                calcTextB += `<div class="computation-line">${inputNames[i]}: ${inputs[i]} × ${modelB.weights[i].toFixed(2)} = ${product.toFixed(2)}</div>`;
+            }
+            
+            calcTextB += `<div class="computation-result">Σ (Total Score) = ${sumB.toFixed(2)}</div>`;
+            document.getElementById('calcB').innerHTML = calcTextB;
+            
+            const predictionB = sumB > 30 ? "High Sales Probability" : sumB > 15 ? "Moderate Sales Probability" : "Low Sales Probability";
+            document.getElementById('outputB').innerHTML = `<div class="output-value">${predictionB}</div><div class="output-score">Score: ${sumB.toFixed(2)}</div>`;
+            
+            // Update weight displays
+            updateWeightDisplays();
+        }
+        
+        function updateWeightDisplays() {
+            // Model A weights
+            document.getElementById('weightA1').textContent = modelA.weights[0].toFixed(2);
+            document.getElementById('weightA2').textContent = modelA.weights[1].toFixed(2);
+            document.getElementById('weightA3').textContent = modelA.weights[2].toFixed(2);
+            
+            // Update visual bars
+            const maxWeight = 1.0;
+            const w1Pct = (Math.abs(modelA.weights[0]) / maxWeight * 100).toFixed(0);
+            const w2Pct = (Math.abs(modelA.weights[1]) / maxWeight * 100).toFixed(0);
+            const w3Pct = (Math.abs(modelA.weights[2]) / maxWeight * 100).toFixed(0);
+            
+            document.getElementById('barA1').style.width = w1Pct + '%';
+            document.getElementById('barA1').querySelector('.weight-bar-label').textContent = w1Pct + '%';
+            
+            document.getElementById('barA2').style.width = w2Pct + '%';
+            document.getElementById('barA2').querySelector('.weight-bar-label').textContent = w2Pct + '%';
+            
+            document.getElementById('barA3').style.width = w3Pct + '%';
+            document.getElementById('barA3').querySelector('.weight-bar-label').textContent = w3Pct + '%';
+            
+            // Handle negative weight
+            if (modelA.weights[2] < 0) {
+                document.getElementById('barA3').classList.add('negative');
+            } else {
+                document.getElementById('barA3').classList.remove('negative');
+            }
+        }
+        
+        function trainModels() {
+            trainingCount++;
+            document.getElementById('trainingCount').textContent = trainingCount;
+            
+            // Simulate gradient descent optimization
+            modelA.weights[0] += 0.05;
+            modelA.weights[1] += 0.08;
+            modelA.weights[2] -= 0.15;
+            
+            // Apply constraints
+            modelA.weights[0] = Math.min(modelA.weights[0], 0.75);
+            modelA.weights[1] = Math.min(modelA.weights[1], 0.65);
+            modelA.weights[2] = Math.max(modelA.weights[2], -0.45);
+            
+            calculatePredictions();
+            
+            // Training feedback
+            if (trainingCount === 1) {
+                alert("Training iteration completed. Model A parameters have been updated via gradient descent. Observe the weight adjustments in the parameter display.");
+            } else if (trainingCount === 5) {
+                alert("Significant progress: Model A weights are converging toward optimal values. Performance metrics should show improved alignment with Model B.");
+            } else if (trainingCount >= 8) {
+                alert("Training approaching completion: Model A has achieved near-optimal parameter configuration.");
+            }
+        }
+        
+        function randomInputs() {
+            document.getElementById('input1').value = Math.floor(Math.random() * 41);
+            document.getElementById('input2').value = Math.floor(Math.random() * 13);
+            document.getElementById('input3').value = Math.floor(Math.random() * 51);
+            update();
+        }
+        
+        function resetModels() {
+            modelA = {
+                weights: [0.5, 0.3, 0.2],
+                bias: 10
+            };
+            
+            trainingCount = 0;
+            document.getElementById('trainingCount').textContent = trainingCount;
+            
+            document.getElementById('input1').value = 20;
+            document.getElementById('input2').value = 6;
+            document.getElementById('input3').value = 15;
+            
+            update();
+        }
+        
+        // Initialize
+        update();
+    </script>
+</body>
+</html>

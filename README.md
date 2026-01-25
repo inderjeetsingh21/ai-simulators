@@ -226,3 +226,22 @@ The system automatically generates clickable question buttons based on current t
 A real-time stats panel tracks training pairs, total conversations, successful matches, and success rate percentage. This quantitative feedback helps students understand the relationship between training data quality and chatbot performance.
 
 ---
+
+# 📊 AI Model Comparison Simulator
+### [ai-model-comparison-simulator.html](ai-model-comparison-simulator.html)
+
+## Overview
+
+An interactive educational tool designed to demonstrate fundamental machine learning concepts, specifically how neural networks utilize weighted parameters to process input features and generate predictions. This simulator provides hands-on experience with weight optimization and parameter learning in AI models.
+
+## Key Features
+
+1. **Dual Model Comparison** - Compare an untrained baseline model against a fully optimized model processing identical inputs with different weight configurations.
+
+2. **Real-time Weight Visualization** - Visual representation of parameter weights showing their relative importance and impact on predictions through dynamic progress bars.
+
+3. **Interactive Training Simulation** - Execute gradient descent iterations to observe how model weights adjust and converge toward optimal values during the learning process.
+
+4. **Forward Propagation Display** - Step-by-step calculation breakdown showing how inputs are multiplied by weights and combined to generate final predictions.
+
+5. **Professional Technical Documentation** - Comprehensive explanation of supervised learning concepts including weight parameters, bias terms, and backpropagation algorithms.
