@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(to bottom right, #fff7ed, #fce7f3);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 56rem;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .results {
+            background: #eff6ff;
+            border: 2px solid #93c5fd;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .results h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .results .score {
+            font-size: 2.25rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .results .message {
+            color: #374151;
+            margin-top: 0.5rem;
+        }
+
+        .results.hidden {
+            display: none;
+        }
+
+        .questions {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .question-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid #d1d5db;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .option:hover:not(:disabled) {
+            background: #f9fafb;
+        }
+
+        .option:disabled {
+            cursor: default;
+        }
+
+        .option.correct {
+            background: #dcfce7;
+            border-color: #22c55e;
+        }
+
+        .option.incorrect {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+
+        .option span.text {
+            color: #1f2937;
+        }
+
+        .option span.badge {
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+
+        .option span.badge.correct {
+            color: #16a34a;
+        }
+
+        .option span.badge.incorrect {
+            color: #dc2626;
+        }
+
+        .explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #eff6ff;
+            border-left: 4px solid #60a5fa;
+            border-radius: 0.25rem;
+        }
+
+        .explanation.hidden {
+            display: none;
+        }
+
+        .explanation p {
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .explanation .label {
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .button-container {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .show-results-btn {
+            background: linear-gradient(to right, #fb923c, #f472b6);
+            color: white;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            border: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .show-results-btn:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05);
+        }
+
+        .completion-message {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+
+        .completion-message.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Machine Learning Quiz</h1>
+            <p>Test your knowledge from Class #2 - Dive into Machine Learning</p>
+            
+            <div id="results" class="results hidden">
+                <h2>Your Score</h2>
+                <p class="score"><span id="score">0</span> / <span id="total">10</span></p>
+                <p class="message" id="message"></p>
+            </div>
+        </div>
+
+        <div class="questions" id="questions-container"></div>
+
+        <div class="button-container">
+            <button class="show-results-btn" id="show-results-btn" onclick="toggleResults()">
+                Show Results
+            </button>
+        </div>
+
+        <div class="completion-message hidden" id="completion-message">
+            <p>You've answered all questions! Click "Show Results" to see your score.</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                question: "What is machine learning?",
+                options: [
+                    "Training algorithms to identify patterns without being explicitly programmed",
+                    "Writing detailed instructions for every possible scenario",
+                    "Creating databases to store information",
+                    "Designing user interfaces for applications"
+                ],
+                correctAnswer: 0,
+                explanation: "Machine learning enables algorithms to learn from data and make decisions based on patterns, rather than following explicit programmed instructions."
+            },
+            {
+                id: 2,
+                question: "What percentage of real-world AI applications use supervised learning?",
+                options: ["50%", "60%", "70%", "80%"],
+                correctAnswer: 3,
+                explanation: "Supervised learning powers 80% of real-world AI applications, including Netflix recommendations and medical diagnosis systems."
+            },
+            {
+                id: 3,
+                question: "What is supervised learning?",
+                options: [
+                    "Finding patterns without labels",
+                    "Learning from labeled examples",
+                    "Learning by trial and error",
+                    "Learning from unlabeled data only"
+                ],
+                correctAnswer: 1,
+                explanation: "Supervised learning uses labeled data (inputs with known outputs) to train models, like teaching with examples that have correct answers."
+            },
+            {
+                id: 4,
+                question: "Which is an example of unsupervised learning?",
+                options: [
+                    "Spam filtering",
+                    "Speech recognition",
+                    "Customer segmentation",
+                    "Image classification"
+                ],
+                correctAnswer: 2,
+                explanation: "Customer segmentation groups customers based on behavior without predefined labels, discovering patterns automatically like Google News grouping similar stories."
+            },
+            {
+                id: 5,
+                question: "How much of a machine learning project's time is typically spent on data preparation?",
+                options: ["40%", "60%", "80%", "90%"],
+                correctAnswer: 2,
+                explanation: "Data preparation (aggregation and cleaning) often consumes 80% of project time, making it the most time-intensive phase of ML projects."
+            },
+            {
+                id: 6,
+                question: "How many files make up a Large Language Model (LLM)?",
+                options: ["1 file", "2 files", "3 files", "4 files"],
+                correctAnswer: 1,
+                explanation: "An LLM consists of 2 files: a parameters file (containing the model weights) and a run file (code to execute the model, often ~500 lines of C)."
+            },
+            {
+                id: 7,
+                question: "What is the approximate size of the Llama-2-70b parameters file?",
+                options: ["70GB", "100GB", "140GB", "200GB"],
+                correctAnswer: 2,
+                explanation: "The Llama-2-70b model has 70 billion parameters stored in a ~140GB file, which can run locally on a MacBook without internet."
+            },
+            {
+                id: 8,
+                question: "What is the main challenge of the fine-tuning stage in ML?",
+                options: [
+                    "Finding enough data",
+                    "Overfitting to small datasets and catastrophic forgetting",
+                    "Computing power requirements",
+                    "Data cleaning"
+                ],
+                correctAnswer: 1,
+                explanation: "Fine-tuning risks overfitting (becoming too specialized to small datasets) and catastrophic forgetting (losing general knowledge while learning specific tasks)."
+            },
+            {
+                id: 9,
+                question: "What does an LLM do after training is complete?",
+                options: [
+                    "Stores data permanently",
+                    "Predicts the next word based on context",
+                    "Translates between languages only",
+                    "Creates new training data"
+                ],
+                correctAnswer: 1,
+                explanation: "After training, LLMs predict the next word by processing context (e.g., 'cat sat on a' → 'mat' with 97% confidence) using learned patterns."
+            },
+            {
+                id: 10,
+                question: "How long does the pre-training stage typically take for a large model?",
+                options: [
+                    "1 day",
+                    "3 days",
+                    "12 days",
+                    "30 days"
+                ],
+                correctAnswer: 2,
+                explanation: "Pre-training a large model requires ~6,000 GPUs running for approximately 12 days at a cost of around $2M to compress ~10TB of text into a neural network."
+            }
+        ];
+
+        let selectedAnswers = {};
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            questions.forEach((question, qIndex) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+
+                let optionsHTML = '';
+                question.options.forEach((option, oIndex) => {
+                    optionsHTML += `
+                        <button class="option" id="option-${question.id}-${oIndex}" 
+                                onclick="handleAnswer(${question.id}, ${oIndex})">
+                            <span class="text">${option}</span>
+                            <span class="badge" id="badge-${question.id}-${oIndex}"></span>
+                        </button>
+                    `;
+                });
+
+                questionCard.innerHTML = `
+                    <h3>${qIndex + 1}. ${question.question}</h3>
+                    <div class="options">
+                        ${optionsHTML}
+                    </div>
+                    <div class="explanation hidden" id="explanation-${question.id}">
+                        <p><span class="label">💡 Explanation: </span>${question.explanation}</p>
+                    </div>
+                `;
+
+                container.appendChild(questionCard);
+            });
+        }
+
+        function handleAnswer(questionId, answerIndex) {
+            if (selectedAnswers[questionId] !== undefined) {
+                return; // Already answered
+            }
+
+            selectedAnswers[questionId] = answerIndex;
+            
+            const question = questions.find(q => q.id === questionId);
+            const isCorrect = answerIndex === question.correctAnswer;
+
+            // Update all options for this question
+            question.options.forEach((_, oIndex) => {
+                const optionBtn = document.getElementById(`option-${questionId}-${oIndex}`);
+                const badge = document.getElementById(`badge-${questionId}-${oIndex}`);
+                
+                optionBtn.disabled = true;
+
+                if (oIndex === question.correctAnswer) {
+                    optionBtn.classList.add('correct');
+                    badge.innerHTML = '✓ Correct';
+                    badge.classList.add('correct');
+                } else if (oIndex === answerIndex) {
+                    optionBtn.classList.add('incorrect');
+                    badge.innerHTML = '✗ Wrong';
+                    badge.classList.add('incorrect');
+                }
+            });
+
+            // Show explanation
+            const explanation = document.getElementById(`explanation-${questionId}`);
+            explanation.classList.remove('hidden');
+
+            // Check if all questions are answered
+            checkCompletion();
+        }
+
+        function checkCompletion() {
+            if (Object.keys(selectedAnswers).length === questions.length) {
+                document.getElementById('completion-message').classList.remove('hidden');
+            }
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            questions.forEach(q => {
+                if (selectedAnswers[q.id] === q.correctAnswer) {
+                    correct++;
+                }
+            });
+            return correct;
+        }
+
+        function toggleResults() {
+            const resultsDiv = document.getElementById('results');
+            const btn = document.getElementById('show-results-btn');
+            
+            if (resultsDiv.classList.contains('hidden')) {
+                const score = calculateScore();
+                document.getElementById('score').textContent = score;
+                document.getElementById('total').textContent = questions.length;
+                
+                let message = '';
+                if (score === questions.length) {
+                    message = "Perfect score! 🎉";
+                } else if (score >= 7) {
+                    message = "Great job! 👏";
+                } else if (score >= 5) {
+                    message = "Good effort! Keep learning! 📚";
+                } else {
+                    message = "Review the material and try again! 💪";
+                }
+                document.getElementById('message').textContent = message;
+                
+                resultsDiv.classList.remove('hidden');
+                btn.textContent = 'Hide Results';
+            } else {
+                resultsDiv.classList.add('hidden');
+                btn.textContent = 'Show Results';
+            }
+        }
+
+        // Initialize the quiz
+        renderQuestions();
+    </script>
+</body>
+</html>
