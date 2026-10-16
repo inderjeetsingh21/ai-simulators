@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MCP Architect Study Lab</title>
+<style>
+:root{--bg:#eef1f5;--card:#fff;--ink:#17202b;--mute:#5d6b7c;--line:#cdd5df;--client:#2f6fed;--server:#0c8f6b;--samp:#c77b00;--code:#f4f6f9;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#12161c;--card:#1b212a;--ink:#e6ebf2;--mute:#93a1b3;--line:#2f3a48;--client:#6b9bff;--server:#35c79c;--samp:#f0a93a;--code:#141a21}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#12161c;--card:#1b212a;--ink:#e6ebf2;--mute:#93a1b3;--line:#2f3a48;--client:#6b9bff;--server:#35c79c;--samp:#f0a93a;--code:#141a21}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 16px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px}
+button:focus-visible{outline:2px solid var(--client);outline-offset:2px}
+button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button:disabled{opacity:.45;cursor:default}
+.intro{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px;color:var(--mute)}
+.ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.ctrl .count{color:var(--mute);margin-left:auto;font-size:.9rem}
+.stage{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 12px 16px;min-height:200px}
+.actors{display:flex;justify-content:space-between;margin-bottom:8px}
+.actor{font-weight:600;padding:6px 10px;border-radius:8px;border:2px solid;font-size:.9rem;text-align:center}
+.actor small{display:block;font-weight:400;color:var(--mute);font-size:.75rem}
+.actor.c{border-color:var(--client);color:var(--client)}
+.actor.s{border-color:var(--server);color:var(--server)}
+.lanes{position:relative;padding:4px 0}
+.lanes::before,.lanes::after{content:"";position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--line)}
+.lanes::before{left:56px}.lanes::after{right:56px}
+.row{position:relative;margin:0 56px;padding:10px 0 6px;cursor:pointer}
+.row:focus-visible{outline:2px solid var(--client);outline-offset:-2px;border-radius:6px}
+.row .lbl{text-align:center;font-size:.85rem;font-weight:600;padding:0 8px}
+.row .lbl span{display:block;font-weight:400;font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--mute);font-size:.75rem}
+.row .arr{height:2px;background:var(--ink);position:relative;margin-top:6px}
+.row.r .arr::after,.row.l .arr::before{content:"";position:absolute;top:-4px;border:5px solid transparent}
+.row.r .arr::after{right:-1px;border-left:9px solid var(--ink);border-right:0}
+.row.l .arr::before{left:-1px;border-right:9px solid var(--ink);border-left:0}
+.row.l .arr{background:var(--server)}.row.l .arr::before{border-right-color:var(--server)}
+.row.r .arr{background:var(--client)}.row.r .arr::after{border-left-color:var(--client)}
+.row.samp .arr{background:var(--samp);border-top:0;height:3px}
+.row.samp.l .arr::before{border-right-color:var(--samp)}.row.samp.r .arr::after{border-left-color:var(--samp)}
+.row.samp .lbl{color:var(--samp)}
+.row.sel{background:color-mix(in srgb,var(--client) 10%,transparent);border-radius:6px}
+.row.note .arr{display:none}
+.note-box{margin:8px auto;max-width:78%;padding:8px 12px;border:1px solid var(--line);border-left:4px solid var(--client);background:var(--code);border-radius:6px;font-size:.85rem;text-align:left}
+.note-box.s{border-left-color:var(--server)}.note-box.u{border-left-color:var(--samp)}.note-box.e{border-left-color:#8a5cf5}
+.empty{text-align:center;color:var(--mute);padding:30px 0}
+.detail{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.detail h2{font-size:1.05rem;margin:0 0 4px}
+.detail p{margin:0 0 10px;color:var(--mute)}
+pre{margin:0;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:10px;overflow-x:auto;font:.8rem/1.45 ui-monospace,Menlo,Consolas,monospace;max-width:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--mute);margin-top:10px}
+.legend i{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:5px}
+@media (max-width:520px){.row,.lanes::before,.lanes::after{margin-left:0;margin-right:0}.row{margin:0 28px}.lanes::before{left:28px}.lanes::after{right:28px}}
+.badge{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:99px;border:1px solid var(--line);margin-right:6px;color:var(--mute)}
+.tip{border-left:4px solid var(--samp);background:var(--code);padding:8px 12px;border-radius:6px;margin:0 0 10px;font-size:.9rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.box h3{margin:0 0 4px;font-size:1rem}.box p,.box li{font-size:.9rem;color:var(--mute);margin:0}.box ul{padding-left:18px;margin:4px 0 0}
+code{font:.82rem ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+h2.sec{font-size:1.1rem;margin:18px 0 8px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+.q p{margin:0 0 8px;font-weight:600}.q button{display:block;width:100%;text-align:left;margin-bottom:6px}
+.q button.ok{border-color:var(--server);background:color-mix(in srgb,var(--server) 18%,transparent)}
+.q button.no{border-color:#d33;background:color-mix(in srgb,#d33 15%,transparent)}
+.q .ex{font-size:.88rem;color:var(--mute);margin-top:4px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<main>
+  <h1>MCP architecture study lab</h1>
+  <p class="sub">Step through real message flows, review the key concepts, then test yourself. Aligned to the public MCP spec; check the official exam guide for scope.</p>
+
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="intro" id="intro"></div>
+
+  <div id="sim"><div class="ctrl">
+    <button id="next">Next step</button>
+    <button id="play">Auto-play</button>
+    <button id="reset">Reset</button>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="stage">
+    <div class="actors">
+      <div class="actor c">Claude<small>MCP client + LLM</small></div>
+      <div class="actor s">MCP server<small>tools, data, prompts</small></div>
+    </div>
+    <div class="lanes" id="lanes"></div>
+  </div>
+
+  <div class="detail">
+    <h2 id="dt">Nothing yet</h2>
+    <div id="dtip"></div><p id="dd">Press “Next step” to send the first message.</p>
+    <pre id="dj">{ }</pre>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--client)"></i>Client → server</span>
+    <span><i style="background:var(--server)"></i>Server → client</span>
+    <span><i style="background:var(--samp)"></i>Sampling (server asks the LLM)</span>
+  </div>
+</div>
+  <div id="ref" class="hide"></div>
+  <div id="quiz" class="hide"></div>
+</main>
+
+<script>
+const P={i:"Initialization",d:"Discovery",o:"Operation"};
+const S={
+tool:{name:"Tool call flow",intro:"Scenario: you ask “What’s the weather in Paris?”. Claude (host) connects to a weather server, discovers tools, and calls one.",steps:[
+{k:"m",d:"r",p:"i",t:"initialize",m:"request",e:"Client opens the session and sends its protocol version and capabilities.",x:"Capability negotiation: each side may only use features the other declared.",
+ j:{jsonrpc:"2.0",id:1,method:"initialize",params:{protocolVersion:"2025-06-18",capabilities:{sampling:{},roots:{},elicitation:{}},clientInfo:{name:"claude",version:"1.0"}}}},
+{k:"m",d:"l",p:"i",t:"initialize result",m:"response",e:"Server answers with its own capabilities. Here it offers tools.",x:"A response carries the same id as its request and holds either result or error.",
+ j:{jsonrpc:"2.0",id:1,result:{protocolVersion:"2025-06-18",capabilities:{tools:{listChanged:true}},serverInfo:{name:"weather-server",version:"0.3.0"}}}},
+{k:"m",d:"r",p:"i",t:"notifications/initialized",m:"notification",e:"Handshake complete. Operation can begin.",x:"Notifications have no id and get no reply. This ends the initialization phase.",
+ j:{jsonrpc:"2.0",method:"notifications/initialized"}},
+{k:"m",d:"r",p:"d",t:"tools/list",m:"request",e:"Claude asks which tools the server exposes.",x:"Discovery is dynamic. The server can send notifications/tools/list_changed later.",
+ j:{jsonrpc:"2.0",id:2,method:"tools/list"}},
+{k:"m",d:"l",p:"d",t:"tools list",m:"response",e:"Each tool has a name, description and a JSON Schema for inputs. The model reads these to choose tools.",x:"Tools are model-controlled: the LLM decides when to call them. Treat descriptions as untrusted input.",
+ j:{jsonrpc:"2.0",id:2,result:{tools:[{name:"get_weather",description:"Get current weather for a city",inputSchema:{type:"object",properties:{city:{type:"string"}},required:["city"]}}]}}},
+{k:"n",w:"u",p:"o",t:"Model decides to call get_weather (user approves)",e:"The tool list goes to the model with your message. It emits a tool call, which the host usually confirms with you.",x:"The host, not the server, owns consent and security policy.",
+ j:{role:"assistant",content:[{type:"tool_use",name:"get_weather",input:{city:"Paris"}}]}},
+{k:"m",d:"r",p:"o",t:"tools/call get_weather",m:"request",e:"The client forwards the call to the server.",x:"The client has a 1:1 connection to each server. The host runs many clients.",
+ j:{jsonrpc:"2.0",id:3,method:"tools/call",params:{name:"get_weather",arguments:{city:"Paris"}}}},
+{k:"n",w:"s",p:"o",t:"Server runs get_weather(“Paris”)",e:"The server does the real work, such as calling a weather API. The client never sees this code.",x:"Servers hold the integration logic and credentials for their own backend.",
+ j:{server_side:"fetch('https://api.example.com/weather?q=Paris')"}},
+{k:"m",d:"l",p:"o",t:"tool result",m:"response",e:"Server returns content blocks. Claude adds them to the conversation.",x:"Tool failures: use isError:true in the result for tool errors, and JSON-RPC error for protocol errors.",
+ j:{jsonrpc:"2.0",id:3,result:{content:[{type:"text",text:"Paris: 17°C, light rain"}],isError:false}}},
+{k:"n",w:"c",p:"o",t:"Claude answers: “17°C with light rain in Paris.”",e:"With the result in context, the model writes the final reply.",x:"Stdio (local subprocess) or Streamable HTTP (remote) carries all of these messages.",
+ j:{role:"assistant",content:[{type:"text",text:"It’s 17°C with light rain in Paris."}]}}]},
+samp:{name:"Sampling flow",intro:"Scenario: a summarize_repo tool needs an LLM. The server asks the client to run one, so the server needs no API key.",steps:[
+{k:"m",d:"r",p:"o",t:"tools/call summarize_repo",m:"request",e:"Claude calls a tool. Assume the session is already initialized.",x:"Sampling only works if the client declared the sampling capability at initialize.",
+ j:{jsonrpc:"2.0",id:10,method:"tools/call",params:{name:"summarize_repo",arguments:{path:"./my-app"}}}},
+{k:"n",w:"s",p:"o",t:"Server reads README.md and package.json",e:"The server gathers text locally and realizes it needs language understanding.",x:"",j:{server_side:"const text = fs.readFileSync('README.md','utf8')"}},
+{k:"m",d:"l",p:"o",t:"sampling/createMessage",m:"request",s:1,e:"A server-initiated request. The server suggests model preferences, but the client picks the model.",x:"Direction flips: this is server → client. Know the three client features: sampling, roots, elicitation.",
+ j:{jsonrpc:"2.0",id:"s-1",method:"sampling/createMessage",params:{messages:[{role:"user",content:{type:"text",text:"Summarize in 2 sentences: <README>"}}],modelPreferences:{intelligencePriority:0.6,speedPriority:0.4},systemPrompt:"You are a concise technical writer.",maxTokens:200}}},
+{k:"n",w:"u",p:"o",t:"Human in the loop",e:"The client can show the prompt to you to approve, edit or reject before any model runs.",x:"Spec guidance: keep a human able to review sampling requests.",
+ j:{approval:"Server 'repo-tools' wants to run a prompt. Allow?",choice:"Allow"}},
+{k:"n",w:"c",p:"o",t:"Claude’s model generates the summary",e:"The client runs its own LLM. The server never gets direct model access or your credentials.",x:"Security win: model access and cost control stay with the client/host.",
+ j:{model:"claude-sonnet",stopReason:"endTurn"}},
+{k:"m",d:"r",p:"o",t:"sampling result",m:"response",s:1,e:"The client returns the generated message to the server.",x:"The id matches the server’s request id (s-1), not the original tools/call id.",
+ j:{jsonrpc:"2.0",id:"s-1",result:{role:"assistant",content:{type:"text",text:"A React task tracker. Run npm start to launch it."},model:"claude-sonnet",stopReason:"endTurn"}}},
+{k:"m",d:"l",p:"o",t:"tool result",m:"response",e:"The server finishes the original tools/call.",x:"One request (id 10) stayed open while a nested server→client request ran.",
+ j:{jsonrpc:"2.0",id:10,result:{content:[{type:"text",text:"A React task tracker. Run npm start to launch it."}]}}}]},
+api:{name:"External API",intro:"Scenario: the server wraps an external weather API. Purple boxes are plain HTTP between the server and the third-party API, which is outside MCP.",steps:[
+{k:"m",d:"r",p:"o",t:"tools/call get_forecast",m:"request",e:"Claude asks for a Lisbon forecast. Assume the session is initialized and tools are discovered.",x:"Arguments must match the tool’s inputSchema. Validate them on the server anyway.",
+ j:{jsonrpc:"2.0",id:21,method:"tools/call",params:{name:"get_forecast",arguments:{city:"Lisbon",units:"metric"}}}},
+{k:"n",w:"s",p:"o",t:"Server validates input and loads WEATHER_API_KEY",e:"The server checks the arguments and reads its API key from the environment.",x:"Credentials stay on the server. They never pass through the client or the model.",
+ j:{server_side:"if(!args.city) throw new Error('city required'); const key = process.env.WEATHER_API_KEY"}},
+{k:"n",w:"e",p:"o",t:"Server → Weather API: GET /v1/forecast?q=Lisbon",e:"The server calls the third-party API over HTTP.",x:"This hop is not MCP. MCP only covers the client ↔ server connection.",
+ j:{http:{method:"GET",url:"https://api.weather.example/v1/forecast?q=Lisbon&units=metric",headers:{Authorization:"Bearer ••••••"}}}},
+{k:"n",w:"e",p:"o",t:"Weather API → Server: 200 OK (JSON)",e:"The API returns a large JSON document with more detail than the model needs.",x:"A 429 or 5xx here is a tool failure, not a protocol failure.",
+ j:{status:200,body:{location:"Lisbon, PT",current:{temp_c:22,condition:"Sunny",wind_kph:14,wind_dir:"NW",humidity:55},daily:[{day:"Tomorrow",max_c:24,condition:"Clear"}],station_meta:"..."}}},
+{k:"n",w:"s",p:"o",t:"Server reshapes the data into a short report",e:"The server keeps only what matters and formats it for the model.",x:"Return concise content. Dumping raw API output wastes context tokens.",
+ j:{server_side:"return { content:[{type:'text', text: formatReport(data)}] }"}},
+{k:"m",d:"l",p:"o",t:"tool result (weather report)",m:"response",e:"The server sends the report back as MCP content.",x:"If the API had failed, return isError:true with a clear message so the model can recover. Use JSON-RPC errors for protocol faults like an unknown tool.",
+ j:{jsonrpc:"2.0",id:21,result:{content:[{type:"text",text:"Lisbon today: 22°C, sunny\nWind: 14 km/h NW\nHumidity: 55%\nTomorrow: 24°C, clear"}],isError:false}}},
+{k:"n",w:"c",p:"o",t:"Claude: “Lisbon is sunny and 22°C, a bit warmer tomorrow.”",e:"The model turns the report into a natural reply.",x:"The user never sees the raw API call, only the final answer and any consent prompts.",
+ j:{role:"assistant",content:[{type:"text",text:"Lisbon is sunny and 22°C today with a light northwest breeze. Tomorrow looks warmer at 24°C."}]}}]},
+sel:{name:"Tool selection",intro:"Scenario: two servers (calendar, weather) are connected. Watch how the model picks tools. Blue boxes are host and model steps, not MCP messages.",steps:[
+{k:"n",w:"u",p:"d",t:"User: “Do I need an umbrella for my 3pm meeting tomorrow?”",e:"The request needs two facts: meeting details and the weather.",x:"The model is never told which tool to use. It infers that from the tool definitions.",j:{role:"user",content:"Do I need an umbrella for my 3pm meeting tomorrow?"}},
+{k:"n",w:"c",p:"d",t:"Host merges tools from every connected server",e:"Each server has its own client. The host combines all tools/list results into one list.",x:"Many tools or vague names hurt selection accuracy. Keep tool sets focused and names distinct.",j:{tools:[{name:"list_events",description:"List calendar events for a date, with time and location"},{name:"get_forecast",description:"Get weather forecast for a city"},{name:"delete_event",description:"Delete a calendar event",annotations:{destructiveHint:true}}]}},
+{k:"n",w:"c",p:"o",t:"Host sends message + tool definitions to the model",e:"Each tool is passed as name, description and input schema in the API request.",x:"tool_choice: auto (default, model decides), any (must use some tool), tool (force one named tool), none.",j:{model:"claude-sonnet",messages:["…user message…"],tools:["list_events","get_forecast","delete_event"],tool_choice:{type:"auto"}}},
+{k:"n",w:"c",p:"o",t:"Model picks list_events (stop_reason: tool_use)",e:"The model matches the need to a tool by reading names, descriptions and schemas, then returns a tool_use block.",x:"Selection is driven by name, description and inputSchema. Annotations like destructiveHint are untrusted hints.",j:{stop_reason:"tool_use",content:[{type:"tool_use",id:"toolu_01",name:"list_events",input:{date:"tomorrow"}}]}},
+{k:"m",d:"r",p:"o",t:"tools/call list_events",m:"request",e:"The host routes the call to the calendar server’s client, then runs it after consent.",x:"The host owns routing and consent. The server only sees its own tools.",j:{jsonrpc:"2.0",id:41,method:"tools/call",params:{name:"list_events",arguments:{date:"tomorrow"}}}},
+{k:"m",d:"l",p:"o",t:"tool result",m:"response",e:"The result goes back to the model as a tool_result block that references tool_use_id toolu_01.",x:"Every tool_result must reference the tool_use id it answers.",j:{jsonrpc:"2.0",id:41,result:{content:[{type:"text",text:"15:00 Client review, Porto office"}],isError:false}}},
+{k:"n",w:"c",p:"o",t:"Model calls get_forecast(“Porto”) next",e:"With the location known, the model chooses a second tool. Independent calls can also be issued in parallel in one turn.",x:"This is the agentic loop. It continues until the model returns stop_reason end_turn.",j:{stop_reason:"tool_use",content:[{type:"tool_use",id:"toolu_02",name:"get_forecast",input:{city:"Porto"}}]}},
+{k:"n",w:"c",p:"o",t:"Final answer (stop_reason: end_turn)",e:"Rain is forecast at 15:00, so the model recommends an umbrella.",x:"Loop ends with no tool_use block in the response.",j:{stop_reason:"end_turn",content:[{type:"text",text:"Your 3pm client review is in Porto, and rain is forecast then. Bring an umbrella."}]}}]},
+err:{name:"Tool errors",intro:"Scenario: three failure types. A protocol error, a tool execution error, and a timeout.",steps:[
+{k:"m",d:"r",p:"o",t:"tools/call get_forcast (typo)",m:"request",e:"The model sends a tool name the server doesn’t have.",x:"Failure type 1: protocol error.",j:{jsonrpc:"2.0",id:51,method:"tools/call",params:{name:"get_forcast",arguments:{city:"Lisbon"}}}},
+{k:"m",d:"l",p:"o",t:"JSON-RPC error -32602",m:"error response",e:"Unknown tools and malformed requests use the JSON-RPC error object, not a result.",x:"Protocol errors: unknown tool, bad params, server faults. Response has error, not result.",j:{jsonrpc:"2.0",id:51,error:{code:-32602,message:"Unknown tool: get_forcast"}}},
+{k:"n",w:"c",p:"o",t:"Host passes the failure to the model as is_error",e:"The host wraps the failure as a tool_result with is_error true so the model sees it in context.",x:"The model can self-correct, for example retry with the right tool name.",j:{type:"tool_result",tool_use_id:"toolu_03",is_error:true,content:"Unknown tool: get_forcast"}},
+{k:"m",d:"r",p:"o",t:"tools/call get_forecast",m:"request",e:"The corrected call reaches the server.",x:"Failure type 2 follows: tool execution error.",j:{jsonrpc:"2.0",id:52,method:"tools/call",params:{name:"get_forecast",arguments:{city:"Lisbon"}}}},
+{k:"n",w:"e",p:"o",t:"Weather API → Server: 429 Too Many Requests",e:"The upstream API rejects the call. The MCP request itself was valid.",x:"Upstream failures are tool failures, not protocol failures.",j:{status:429,headers:{"Retry-After":"30"}}},
+{k:"m",d:"l",p:"o",t:"tool result with isError:true",m:"response",e:"The server returns a normal result flagged as an error, with a message the model can act on.",x:"Execution errors go in result with isError:true. Write actionable messages (what failed, what to try).",j:{jsonrpc:"2.0",id:52,result:{isError:true,content:[{type:"text",text:"Weather API rate limited. Retry after 30 seconds, or ask the user to try again later."}]}}},
+{k:"n",w:"c",p:"o",t:"Model decides: wait, retry, use another tool, or tell the user",e:"Because the error is in context, the model can reason about recovery.",x:"Do not blindly retry non-idempotent tools. Use backoff and retry limits.",j:{decision:"Explain the delay to the user and offer to retry"}},
+{k:"m",d:"r",p:"o",t:"notifications/cancelled",m:"notification",e:"Failure type 3: a request hangs. The client enforces a timeout and cancels it.",x:"Clients set timeouts and send notifications/cancelled with the requestId. The server should stop work.",j:{jsonrpc:"2.0",method:"notifications/cancelled",params:{requestId:53,reason:"Timed out after 30s"}}}]},
+ref:{name:"Cheat sheet"},quiz:{name:"Quiz"}};
+const REF=`<h2 class="sec">Roles</h2><div class="grid">
+<div class="box"><h3>Host</h3><p>The app (Claude). Runs the LLM, manages many clients, enforces consent and security.</p></div>
+<div class="box"><h3>Client</h3><p>Lives in the host. Holds a 1:1 stateful connection to one server.</p></div>
+<div class="box"><h3>Server</h3><p>Exposes capabilities from a data source or service. Local or remote.</p></div></div>
+<h2 class="sec">Server primitives and who controls them</h2><div class="grid">
+<div class="box"><h3>Tools</h3><p>Model-controlled actions. <code>tools/list</code>, <code>tools/call</code></p></div>
+<div class="box"><h3>Resources</h3><p>Application-controlled context data with URIs. <code>resources/list</code>, <code>resources/read</code></p></div>
+<div class="box"><h3>Prompts</h3><p>User-controlled templates, like slash commands. <code>prompts/list</code>, <code>prompts/get</code></p></div></div>
+<h2 class="sec">Client primitives</h2><div class="grid">
+<div class="box"><h3>Sampling</h3><p>Server asks the client’s LLM to generate. <code>sampling/createMessage</code></p></div>
+<div class="box"><h3>Roots</h3><p>Client tells the server which filesystem or URI scopes it may work in. <code>roots/list</code></p></div>
+<div class="box"><h3>Elicitation</h3><p>Server asks the user for missing input. <code>elicitation/create</code></p></div></div>
+<h2 class="sec">Protocol facts</h2><div class="grid">
+<div class="box"><h3>JSON-RPC 2.0 messages</h3><ul><li>Request: has id, expects reply</li><li>Response: result or error</li><li>Notification: no id, no reply</li></ul></div>
+<div class="box"><h3>Lifecycle</h3><ul><li>initialize → initialized</li><li>Operation (negotiated features only)</li><li>Shutdown by closing the transport</li></ul></div>
+<div class="box"><h3>Transports</h3><ul><li>stdio: local subprocess</li><li>Streamable HTTP: remote servers (replaced HTTP+SSE)</li><li>Remote auth uses OAuth</li></ul></div>
+<div class="box"><h3>Security habits</h3><ul><li>User consent before tool calls and sampling</li><li>Treat tool descriptions as untrusted</li><li>Least privilege and scoped roots</li></ul></div></div>
+<h2 class="sec">How Claude chooses tools</h2><div class="grid">
+<div class="box"><h3>Inputs to the decision</h3><p>Tool name, description and inputSchema, plus the conversation. Clear descriptions are the main lever.</p></div>
+<div class="box"><h3>tool_choice</h3><ul><li><code>auto</code>: model decides (default)</li><li><code>any</code>: must call some tool</li><li><code>tool</code>: force a named tool</li><li><code>none</code>: no tools</li></ul></div>
+<div class="box"><h3>Agentic loop</h3><ul><li><code>stop_reason: tool_use</code> → host runs tool</li><li>Send tool_result with tool_use_id</li><li>Repeat until <code>end_turn</code></li></ul></div></div>
+<h2 class="sec">Tool error handling</h2><div class="grid">
+<div class="box"><h3>Protocol error</h3><p>JSON-RPC <code>error</code> object. Unknown tool, invalid params (-32602), server fault.</p></div>
+<div class="box"><h3>Execution error</h3><p><code>result</code> with <code>isError:true</code> and an actionable message. Model can recover.</p></div>
+<div class="box"><h3>Timeouts</h3><p>Client cancels with <code>notifications/cancelled</code> and the requestId.</p></div></div>`;
+const Q=[
+["Who decides when a tool is invoked?",["The MCP server","The LLM, with host-enforced user consent","The transport layer","The user, by typing a URI"],1,"Tools are model-controlled. The host adds consent and policy."],
+["A server needs text generated but has no API key. Which feature fits?",["Roots","Elicitation","Sampling","Resources"],2,"Sampling lets the server ask the client’s LLM via sampling/createMessage."],
+["Which message type has no id and gets no response?",["Request","Notification","Result","Error response"],1,"notifications/initialized is an example."],
+["Which transport suits a local server launched as a subprocess?",["stdio","Streamable HTTP","WebSocket","gRPC"],0,"stdio is for local processes. Streamable HTTP is for remote servers."],
+["Which primitive is application-controlled context data identified by URI?",["Tools","Prompts","Resources","Roots"],2,"Resources supply context. Prompts are user-controlled templates."],
+["What must happen before the client sends tools/list?",["Shutdown","Sampling approval","The initialize handshake and initialized notification","A resources/read call"],2,"Initialization and capability negotiation come first."],
+["Which is a server-to-client request?",["tools/call","tools/list","initialize","elicitation/create"],3,"Elicitation, sampling and roots/list are server-initiated requests to the client."],
+["What mainly drives which tool the model selects?",["Order in tools/list","Names, descriptions and input schemas","Server hostname","Transport type"],1,"The model reads tool definitions. Clear descriptions improve selection."],
+["Which tool_choice forces one specific named tool?",["auto","any","tool","none"],2,"auto lets the model decide, any requires some tool, tool forces a named tool."],
+["What ends the agentic tool loop?",["Model returns end_turn with no tool_use","tools/list changes","Server sends initialized","Client sends ping"],0,"The loop runs while stop_reason is tool_use."],
+["A tool’s upstream API returns 429. How should the server report it?",["JSON-RPC error -32601","Result with isError:true and an actionable message","Close the transport","Return an empty result"],1,"Execution errors belong in the result so the model can reason about recovery."],
+["tools/call names a tool that doesn’t exist. What is returned?",["isError:true result","JSON-RPC protocol error","A notification","A new initialize"],1,"Unknown tools are protocol errors, not tool execution errors."]];
+let cur="tool",n=0,timer=null;const $=id=>document.getElementById(id);
+function tabs(){$("tabs").innerHTML="";for(const k in S){const b=document.createElement("button");b.textContent=S[k].name;b.className=k===cur?"on":"";b.setAttribute("role","tab");b.onclick=()=>{cur=k;view();tabs()};$("tabs").append(b)}}
+function view(){stop();const sim=!!S[cur].steps;$("sim").classList.toggle("hide",!sim);$("intro").classList.toggle("hide",!sim);$("ref").classList.toggle("hide",cur!=="ref");$("quiz").classList.toggle("hide",cur!=="quiz");
+ if(sim)reset();if(cur==="ref")$("ref").innerHTML=REF;if(cur==="quiz")quiz()}
+function reset(){stop();n=0;$("lanes").innerHTML='<div class="empty">No messages yet.</div>';$("intro").textContent=S[cur].intro;
+ $("dt").textContent="Nothing yet";$("dtip").innerHTML="";$("dd").textContent="Press “Next step” to send the first message.";$("dj").textContent="{ }";upd()}
+function upd(){const t=S[cur].steps.length;$("count").textContent=`Step ${n} of ${t}`;$("next").disabled=n>=t;if(n>=t)stop()}
+function show(i){const s=S[cur].steps[i];$("dt").innerHTML="";const b=document.createElement("span");b.className="badge";b.textContent=P[s.p];$("dt").append(b,s.t+(s.m?` (${s.m})`:""));
+ $("dtip").innerHTML="";if(s.x){const d=document.createElement("div");d.className="tip";d.textContent="Exam tip: "+s.x;$("dtip").append(d)}
+ $("dd").textContent=s.e;$("dj").textContent=JSON.stringify(s.j,null,2);document.querySelectorAll(".row,.note-box").forEach(e=>e.classList.toggle("sel",+e.dataset.i===i))}
+function next(){const st=S[cur].steps;if(n>=st.length)return;const s=st[n],L=$("lanes");if(n===0)L.innerHTML="";let el;
+ if(s.k==="n"){el=document.createElement("div");el.className="note-box "+s.w;el.textContent=s.t}
+ else{el=document.createElement("div");el.className="row "+s.d+(s.s?" samp":"");el.innerHTML='<div class="lbl"></div><div class="arr"></div>';el.firstChild.textContent=s.t;const sp=document.createElement("span");sp.textContent=s.m;el.firstChild.append(sp)}
+ const i=n;el.dataset.i=i;el.tabIndex=0;el.style.cursor="pointer";el.onclick=()=>show(i);el.onkeydown=e=>{if(e.key==="Enter")show(i)};
+ L.append(el);show(i);n++;upd();el.scrollIntoView({block:"nearest",behavior:"smooth"})}
+function stop(){if(timer){clearInterval(timer);timer=null}$("play").textContent="Auto-play"}
+function quiz(){let sc=0,done=0;const R=$("quiz");R.innerHTML="";const out=document.createElement("p");out.className="sub";out.textContent="Answer all "+Q.length+" questions.";R.append(out);
+ Q.forEach(([q,o,a,ex])=>{const d=document.createElement("div");d.className="q";const p=document.createElement("p");p.textContent=q;d.append(p);const e=document.createElement("div");e.className="ex";
+  const bs=o.map((t,i)=>{const b=document.createElement("button");b.textContent=t;b.onclick=()=>{if(d.dataset.done)return;d.dataset.done=1;bs.forEach((x,j)=>{if(j===a)x.classList.add("ok")});if(i!==a)b.classList.add("no");else sc++;e.textContent=(i===a?"Correct. ":"Not quite. ")+ex;done++;if(done===Q.length)out.textContent=`Score: ${sc} of ${Q.length}`};d.append(b);return b});d.append(e);R.append(d)});
+ const r=document.createElement("button");r.textContent="Retry";r.onclick=quiz;R.append(r)}
+$("next").onclick=()=>{stop();next()};
+$("play").onclick=()=>{if(timer){stop();return}if(n>=S[cur].steps.length)reset();$("play").textContent="Pause";next();timer=setInterval(next,2000)};
+$("reset").onclick=reset;
+tabs();view();
+</script>
+</body>
+</html>
